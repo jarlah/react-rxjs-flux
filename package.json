@@ -34,7 +34,7 @@
     "precommit": "lint-staged"
   },
   "lint-staged": {
-    "{src,test}/**/*.ts": [
+    "{src,test}/**/*.ts*": [
       "prettier --write --no-semi",
       "git add"
     ]
