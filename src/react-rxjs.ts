@@ -1,9 +1,3 @@
-import { Observable } from "rxjs"
-import RxInject from "./RxInject"
-import RxStore from "./RxStore"
-
-export default {
-  RxInject,
-  RxStore,
-  RxObservable: Observable
-}
+export { Observable } from "rxjs"
+export { default as inject } from "./RxInject"
+export { default as createStore } from "./RxStore"
