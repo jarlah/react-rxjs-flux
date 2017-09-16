@@ -21,7 +21,7 @@
   "scripts": {
     "lint": "tslint -t codeFrame 'src/**/*.ts*' 'test/**/*.ts*'",
     "prebuild": "rimraf dist",
-    "build": "tsc && rollup -c && rimraf compiled && typedoc --out dist/docs --target es6 --theme minimal src",
+    "build": "tsc --jsx react && rollup -c && rimraf compiled && typedoc --jsx react --out dist/docs --target es6 --theme minimal src",
     "start": "node ./node_modules/.bin/tsc-watch --jsx react --onSuccess \"rollup -c\"",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -104,8 +104,5 @@
     "typedoc": "^0.7.1",
     "typescript": "^2.3.4",
     "validate-commit-msg": "^2.12.2"
-  },
-  "peerDependencies": {
-    "rxjs": "5.x"
   }
 }
