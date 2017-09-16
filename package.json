@@ -1,7 +1,7 @@
 {
   "name": "react-rxjs",
-  "version": "0.0.0",
-  "description": "",
+  "version": "0.0.1",
+  "description": "A small library for creating applications based on unidirectional data flow with RxJS",
   "keywords": [],
   "main": "dist/react-rxjs.umd.js",
   "module": "dist/react-rxjs.es5.js",
@@ -12,7 +12,7 @@
   "author": "Jarl André Hübenthal <jarl.andre@gmail.com>",
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "git://github.com/jarlah/react-rxjs.git"
   },
   "license": "MIT",
   "engines": {
