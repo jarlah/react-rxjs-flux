@@ -3,8 +3,8 @@ import { Observable, Subscription } from "rxjs"
 
 declare global {
   interface Window {
-    __REDUX_DEVTOOLS_EXTENSION__?: DevTools | undefined
-    devToolsExtension?: DevTools | undefined
+    __REDUX_DEVTOOLS_EXTENSION__?: DevTools
+    devToolsExtension?: DevTools
   }
 }
 
