@@ -1,6 +1,6 @@
 {
   "name": "react-rxjs",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A small library for creating applications based on unidirectional data flow with RxJS",
   "keywords": [],
   "main": "dist/react-rxjs.umd.js",
