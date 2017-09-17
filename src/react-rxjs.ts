@@ -6,9 +6,4 @@ export {
   Store,
   StoreFactory
 } from "./RxInject"
-export {
-  default as createStore,
-  createAction,
-  createActions,
-  Reducer
-} from "./RxStore"
+export { default as createStore, Reducer } from "./RxStore"
