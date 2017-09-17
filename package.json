@@ -12,7 +12,7 @@
   "author": "Jarl André Hübenthal <jarl.andre@gmail.com>",
   "repository": {
     "type": "git",
-    "url": "git://github.com/jarlah/react-rxjs.git"
+    "url": "https://github.com/jarlah/react-rxjs.git"
   },
   "license": "MIT",
   "engines": {
