@@ -1,0 +1,25 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`RxInject is instantiable with Factory 1`] = `
+<Inject>
+  <NumberComp
+    number={0}
+  >
+    <span>
+      0
+    </span>
+  </NumberComp>
+</Inject>
+`
+
+exports[`RxInject is instantiable with Observable 1`] = `
+<Inject>
+  <NumberComp
+    number={0}
+  >
+    <span>
+      0
+    </span>
+  </NumberComp>
+</Inject>
+`

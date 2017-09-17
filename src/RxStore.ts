@@ -12,7 +12,7 @@ export default function createStore<T>(
     .scan((state, reducer) => reducer(state), initialState)
     .do((state: T) => {
       if (process.env.NODE_ENV === "development") {
-        console.debug(name, state)
+        console.log(name, state)
       }
     })
     .publishReplay(1)

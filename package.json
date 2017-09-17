@@ -66,22 +66,28 @@
     ],
     "coverageThreshold": {
       "global": {
-        "branches": 13,
-        "functions": 33,
-        "lines": 29,
-        "statements": 27
+        "branches": 43,
+        "functions": 76,
+        "lines": 66,
+        "statements": 64
       }
     }
   },
   "devDependencies": {
+    "@types/enzyme": "^2.8.7",
+    "@types/enzyme-to-json": "^1.5.0",
     "@types/jest": "^20.0.0",
     "@types/node": "^8.0.0",
     "@types/react": "^16.0.5",
+    "@types/react-dom": "^15.5.4",
+    "@types/react-test-renderer": "^15.5.4",
     "colors": "^1.1.2",
     "commitizen": "^2.9.6",
     "coveralls": "^2.13.1",
     "cross-env": "^5.0.1",
     "cz-conventional-changelog": "^2.0.0",
+    "enzyme": "^2.9.1",
+    "enzyme-to-json": "^2.0.0",
     "husky": "^0.14.0",
     "jest": "^21.0.0",
     "lint-staged": "^4.0.0",
@@ -89,6 +95,8 @@
     "prettier": "^1.4.4",
     "prompt": "^1.0.0",
     "react": "^15.6.1",
+    "react-dom": "^15.6.1",
+    "react-test-renderer": "^15.6.1",
     "replace-in-file": "^2.5.0",
     "rimraf": "^2.6.1",
     "rollup": "^0.49.0",
