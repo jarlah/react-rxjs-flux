@@ -15,10 +15,22 @@ exports[`RxInject is instantiable with Factory 1`] = `
 exports[`RxInject is instantiable with Observable 1`] = `
 <Inject>
   <NumberComp
-    number={0}
+    number={2}
   >
     <span>
-      0
+      2
+    </span>
+  </NumberComp>
+</Inject>
+`
+
+exports[`RxInject is instantiable with Observable 2`] = `
+<Inject>
+  <NumberComp
+    number={42}
+  >
+    <span>
+      42
     </span>
   </NumberComp>
 </Inject>

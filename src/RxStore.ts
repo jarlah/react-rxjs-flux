@@ -8,13 +8,10 @@ export default function createStore<T>(
   initialState: T,
   keepAlive: boolean = false
 ): Observable<T> {
+  const isDev = process.env.NODE_ENV === "development"
   const store = reducer$
     .scan((state, reducer) => reducer(state), initialState)
-    .do((state: T) => {
-      if (process.env.NODE_ENV === "development") {
-        console.log(name, state)
-      }
-    })
+    .do((state: T) => isDev && console.log(name, state))
     .publishReplay(1)
     .refCount()
     .startWith(initialState)
