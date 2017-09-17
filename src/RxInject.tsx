@@ -25,15 +25,15 @@ export default function inject<ComponentProps, StoreProps, ParentProps>(
     type State = { store: StoreProps }
     class Inject extends React.Component<ParentProps, State> {
       state: State
-      subscription: Subscription
-      unsubscribe: () => void
+      storeSubscription: Subscription
+      devToolsSubscription: () => void
       devTools: DevToolsInstance
 
       componentWillMount() {
         const devToolsExt = getDevToolsExt()
         if (devToolsExt) {
           this.devTools = devToolsExt.connect()
-          this.unsubscribe = this.devTools.subscribe(message => {
+          this.devToolsSubscription = this.devTools.subscribe(message => {
             if (
               message.type === "DISPATCH" &&
               (message.payload.type === "JUMP_TO_ACTION" ||
@@ -48,7 +48,7 @@ export default function inject<ComponentProps, StoreProps, ParentProps>(
 
       componentDidMount() {
         const observable = getObservable(store, this.props)
-        this.subscription = observable.subscribe(storeProps => {
+        this.storeSubscription = observable.subscribe(storeProps => {
           if (this.devTools) {
             this.devTools.send("update", storeProps)
           }
@@ -57,10 +57,10 @@ export default function inject<ComponentProps, StoreProps, ParentProps>(
       }
 
       componentWillUnmount() {
-        this.subscription.unsubscribe()
+        this.storeSubscription.unsubscribe()
         const devToolsExt = getDevToolsExt()
         if (devToolsExt) {
-          this.unsubscribe()
+          this.devToolsSubscription()
           devToolsExt.disconnect()
         }
       }
