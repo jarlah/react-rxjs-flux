@@ -34,8 +34,7 @@ export default function inject<ComponentProps, StoreProps, ParentProps>(
         if (devToolsExt) {
           this.devTools = devToolsExt.connect()
           this.devToolsSubscription = this.devTools.subscribe(message => {
-            const isRelevant = isRelevant(message)
-            if (isRelevant) {
+            if (isRelevant(message)) {
               const props: StoreProps = JSON.parse(message.state)
               this.setState({ store: props })
             }
@@ -120,7 +119,7 @@ declare global {
   }
 }
 
-function isRelevant(message) {
+export function isRelevant(message: Message): boolean {
   return (
     message.type === "DISPATCH" &&
     (message.payload.type === "JUMP_TO_ACTION" ||

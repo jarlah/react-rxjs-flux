@@ -1,8 +1,28 @@
 import { inject, createStore } from "../src/react-rxjs"
+import { isRelevant } from "../src/RxInject"
 import { Observable } from "rxjs/Observable"
 import * as React from "react"
 import { mount } from "enzyme"
 import shallowToJson from "enzyme-to-json"
+
+describe("isRelevant", () => {
+  it("should be relevant", () => {
+    expect(
+      isRelevant({
+        type: "DISPATCH",
+        state: 42,
+        payload: { type: "JUMP_TO_STATE" }
+      })
+    ).toBe(true)
+  })
+  it("should not be relevant", () => {
+    expect(
+      isRelevant({
+        type: "JADAJADA"
+      })
+    ).toBe(false)
+  })
+})
 
 describe("RxInject", () => {
   it("is instantiable with Observable", done => {
