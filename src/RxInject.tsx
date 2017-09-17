@@ -34,11 +34,8 @@ export default function inject<ComponentProps, StoreProps, ParentProps>(
         if (devToolsExt) {
           this.devTools = devToolsExt.connect()
           this.devToolsSubscription = this.devTools.subscribe(message => {
-            if (
-              message.type === "DISPATCH" &&
-              (message.payload.type === "JUMP_TO_ACTION" ||
-                message.payload.type === "JUMP_TO_STATE")
-            ) {
+            const isRelevant = isRelevant(message)
+            if (isRelevant) {
               const props: StoreProps = JSON.parse(message.state)
               this.setState({ store: props })
             }
@@ -121,4 +118,12 @@ declare global {
     __REDUX_DEVTOOLS_EXTENSION__?: DevTools
     devToolsExtension?: DevTools
   }
+}
+
+function isRelevant(message) {
+  return (
+    message.type === "DISPATCH" &&
+    (message.payload.type === "JUMP_TO_ACTION" ||
+      message.payload.type === "JUMP_TO_STATE")
+  )
 }
