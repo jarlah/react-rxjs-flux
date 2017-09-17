@@ -11,7 +11,9 @@ npm i -S react-rxjs
 ## Usage
 
 ```js
-// view.js
+// view.tsx
+import * as React from 'react';
+
 export type MyProps = { 
   number: number, 
   inc: () => void, 
@@ -20,13 +22,23 @@ export type MyProps = {
 
 class MyComponent extends React.Component<MyProps, {}> {
     render() {
-        return <span>{this.props.number} <button onClick={this.props.inc}>+</button> <button onClick={this.props.dec}>-</button></span>;
+        return (
+          <div>
+            {this.props.number}
+            <button onClick={this.props.inc}>+</button>
+            <button onClick={this.props.dec}>-</button>
+          </div>
+        );
     }
 }
 
 export default MyComponent;
+```
 
-// store.js
+```js
+// store.ts
+import { createStore } from 'react-rxjs';
+
 const inc$ = new Subject<void>();
 const dec$ = new Subject<void>();
 
@@ -40,15 +52,19 @@ const store$ = createStore("example", reducer$, 0);
 export inc = () => inc$.next();
 export dec = () => dec$.next();
 export default store$;
+```
 
-// container.js
-const props = (storeState: number): MyProps => {
-    return {
-        number: storeState,
-        inc,
-        dec
-    };
-};
+```js
+// container.ts
+import { inject } from 'react-rxjs';
+import store$, { inc, dec } from './store';
+import MyComponent from './view';
+
+const props = (storeState: number): MyProps => ({
+    number: storeState,
+    inc,
+    dec
+});
 
 export default inject(store$, props)(MyComponent);
 ```
