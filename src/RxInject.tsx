@@ -9,7 +9,7 @@ declare global {
 }
 
 export type Injector<ComponentProps, ParentProps> = (
-  Component: React.ComponentClass<ComponentProps>
+  Component: React.ComponentType<ComponentProps>
 ) => React.ComponentClass<ParentProps>
 
 export type PropsType<ComponentProps, StoreProps, UpstreamProps> = (
@@ -42,7 +42,7 @@ export default function inject<ComponentProps, StoreProps, ParentProps>(
   store: Store<StoreProps>,
   props: PropsType<ComponentProps, StoreProps, ParentProps>
 ): Injector<ComponentProps, ParentProps> {
-  return (Component: React.ComponentClass<ComponentProps>) => {
+  return (Component: React.ComponentType<ComponentProps>) => {
     type State = { store: StoreProps }
     class Inject extends React.Component<ParentProps, State> {
       state: State
