@@ -20,7 +20,13 @@ export type MyProps = {
 
 class MyComponent extends React.Component<MyProps, {}> {
     render() {
-        return <span>{this.props.number} <button onClick={this.props.inc}>+</button> <button onClick={this.props.dec}>-</button></span>;
+        return (
+          <div>
+            {this.props.number}
+            <button onClick={this.props.inc}>+</button>
+            <button onClick={this.props.dec}>-</button>
+          </div>
+        );
     }
 }
 
