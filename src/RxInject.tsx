@@ -1,13 +1,6 @@
 import * as React from "react"
 import { Observable, Subscription } from "rxjs"
 
-declare global {
-  interface Window {
-    __REDUX_DEVTOOLS_EXTENSION__?: DevTools
-    devToolsExtension?: DevTools
-  }
-}
-
 export type Injector<ComponentProps, ParentProps> = (
   Component: React.ComponentType<ComponentProps>
 ) => React.ComponentClass<ParentProps>
@@ -16,24 +9,6 @@ export type PropsType<ComponentProps, StoreProps, UpstreamProps> = (
   store: StoreProps,
   upstream: UpstreamProps
 ) => ComponentProps
-
-export type Message = {
-  type: string
-  payload: {
-    type: string
-  }
-  state: any
-}
-
-export type DevToolsInstance = {
-  subscribe: (sub: (message: Message) => void) => () => void
-  send: (n: string, o: any) => void
-}
-
-export type DevTools = {
-  connect: () => DevToolsInstance
-  disconnect: () => void
-}
 
 export type Store<T> = Observable<T> | StoreFactory<T>
 export type StoreFactory<T> = () => Observable<T>
@@ -117,4 +92,29 @@ function getObservable<T>(store: Store<T>): Observable<T> {
     observable = store
   }
   return observable
+}
+
+export type Message = {
+  type: string
+  payload: {
+    type: string
+  }
+  state: any
+}
+
+export type DevToolsInstance = {
+  subscribe: (sub: (message: Message) => void) => () => void
+  send: (n: string, o: any) => void
+}
+
+export type DevTools = {
+  connect: () => DevToolsInstance
+  disconnect: () => void
+}
+
+declare global {
+  interface Window {
+    __REDUX_DEVTOOLS_EXTENSION__?: DevTools
+    devToolsExtension?: DevTools
+  }
 }
