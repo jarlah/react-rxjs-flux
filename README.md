@@ -12,6 +12,8 @@ npm i -S react-rxjs
 
 ```js
 // view.tsx
+import * as React from 'react';
+
 export type MyProps = { 
   number: number, 
   inc: () => void, 
@@ -35,6 +37,8 @@ export default MyComponent;
 
 ```js
 // store.ts
+import { createStore } from 'react-rxjs';
+
 const inc$ = new Subject<void>();
 const dec$ = new Subject<void>();
 
@@ -52,6 +56,7 @@ export default store$;
 
 ```js
 // container.ts
+import { inject } from 'react-rxjs';
 import store$, { inc, dec } from './store';
 import MyComponent from './view';
 
