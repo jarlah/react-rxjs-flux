@@ -11,7 +11,7 @@ npm i -S react-rxjs
 ## Usage
 
 ```js
-// view.ts
+// view.tsx
 export type MyProps = { 
   number: number, 
   inc: () => void, 
