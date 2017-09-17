@@ -60,13 +60,11 @@ import { inject } from 'react-rxjs';
 import store$, { inc, dec } from './store';
 import MyComponent from './view';
 
-const props = (storeState: number): MyProps => {
-    return {
-        number: storeState,
-        inc,
-        dec
-    };
-};
+const props = (storeState: number): MyProps => ({
+    number: storeState,
+    inc,
+    dec
+});
 
 export default inject(store$, props)(MyComponent);
 ```
