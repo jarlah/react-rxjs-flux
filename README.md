@@ -11,7 +11,7 @@ npm i -S react-rxjs
 ## Usage
 
 ```js
-// view.js
+// view.ts
 export type MyProps = { 
   number: number, 
   inc: () => void, 
@@ -25,8 +25,10 @@ class MyComponent extends React.Component<MyProps, {}> {
 }
 
 export default MyComponent;
+```
 
-// store.js
+```js
+// store.ts
 const inc$ = new Subject<void>();
 const dec$ = new Subject<void>();
 
@@ -40,8 +42,13 @@ const store$ = createStore("example", reducer$, 0);
 export inc = () => inc$.next();
 export dec = () => dec$.next();
 export default store$;
+```
 
-// container.js
+```js
+// container.ts
+import store$, { inc, dec } from './store';
+import MyComponent from './view';
+
 const props = (storeState: number): MyProps => {
     return {
         number: storeState,
