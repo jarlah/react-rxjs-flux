@@ -10,11 +10,15 @@ export type PropsType<ComponentProps, StoreProps, UpstreamProps> = (
   upstream: UpstreamProps
 ) => ComponentProps
 
-export type Store<T> = Observable<T> | StoreFactory<T>
-export type StoreFactory<T> = () => Observable<T>
+export type Store<ParentProps, StoreProps> =
+  | Observable<StoreProps>
+  | StoreFactory<ParentProps, StoreProps>
+export type StoreFactory<ParentProps, StoreProps> = (
+  props: ParentProps
+) => Observable<StoreProps>
 
 export default function inject<ComponentProps, StoreProps, ParentProps>(
-  store: Store<StoreProps>,
+  store: Store<ParentProps, StoreProps>,
   props: PropsType<ComponentProps, StoreProps, ParentProps>
 ): Injector<ComponentProps, ParentProps> {
   return (Component: React.ComponentType<ComponentProps>) => {
@@ -43,7 +47,7 @@ export default function inject<ComponentProps, StoreProps, ParentProps>(
       }
 
       componentDidMount() {
-        const observable = getObservable(store)
+        const observable = getObservable(store, this.props)
         this.subscription = observable.subscribe(storeProps => {
           if (this.devTools) {
             this.devTools.send("update", storeProps)
@@ -82,12 +86,12 @@ function getDevToolsExt(): DevTools | undefined {
   }
 }
 
-function getObservable<T>(store: Store<T>): Observable<T> {
+function getObservable<P, T>(store: Store<P, T>, parentPops: P): Observable<T> {
   let observable: Observable<T>
   if (store instanceof Observable) {
     observable = store
   } else if (typeof store === "function") {
-    observable = store()
+    observable = store(parentPops)
   } else {
     observable = store
   }
