@@ -154,7 +154,7 @@ describe("RxInject", () => {
     )
 
     const InjectedNumberComp = inject(
-      () => Observable.of(0),
+      () => Observable.of(666),
       (storeProps: number) => ({ number: storeProps })
     )(NumberComp)
 
@@ -174,7 +174,7 @@ describe("RxInject", () => {
     }
 
     const InjectedNumberComp = inject(
-      () => Observable.of(0),
+      () => Observable.of(1337),
       (storeProps: number) => ({ number: storeProps })
     )(NumberComp2)
 
@@ -182,10 +182,6 @@ describe("RxInject", () => {
 
     const wrapper = mount(<InjectedNumberComp />)
     expect(shallowToJson(wrapper)).toMatchSnapshot()
-    wrapper.unmount()
-    wrapper.mount()
-    expect(shallowToJson(wrapper)).toMatchSnapshot()
-    wrapper.unmount()
   })
 
   it("should fail horribly if passed wrong values", done => {

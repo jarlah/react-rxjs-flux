@@ -3,10 +3,10 @@
 exports[`RxInject is instantiable with Factory abd props function 1`] = `
 <Inject>
   <NumberComp
-    number={0}
+    number={666}
   >
     <span>
-      0
+      666
     </span>
   </NumberComp>
 </Inject>
@@ -15,16 +15,14 @@ exports[`RxInject is instantiable with Factory abd props function 1`] = `
 exports[`RxInject is instantiable with Factory and class component 1`] = `
 <Inject>
   <NumberComp2
-    number={0}
+    number={1337}
   >
     <span>
-      0
+      1337
     </span>
   </NumberComp2>
 </Inject>
 `
-
-exports[`RxInject is instantiable with Factory and class component 2`] = `null`
 
 exports[`RxInject is instantiable with Observable 1`] = `
 <Inject>
