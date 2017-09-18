@@ -1,8 +1,9 @@
 import * as React from "react"
-import { Observable, Subscription } from "rxjs"
+import { Observable } from "rxjs"
+import functionWrapper from "./functionWrapper"
 
 export type Injector<ComponentProps, ParentProps> = (
-  Component: React.ComponentClass<ComponentProps>
+  Component: React.ComponentType<ComponentProps>
 ) => React.ComponentClass<ParentProps>
 
 export type PropsType<ComponentProps, StoreProps, UpstreamProps> = (
@@ -21,7 +22,7 @@ export default function inject<ComponentProps, StoreProps, ParentProps>(
   store: Store<ParentProps, StoreProps>,
   props: PropsType<ComponentProps, StoreProps, ParentProps>
 ): Injector<ComponentProps, ParentProps> {
-  return (Component: React.ComponentClass<ComponentProps>) => {
+  return (Component: React.ComponentType<ComponentProps>) => {
     type State = { store: StoreProps }
     return React.createClass<ParentProps, State>({
       displayName: "Inject",
@@ -62,7 +63,15 @@ export default function inject<ComponentProps, StoreProps, ParentProps>(
           typeof props === "function"
             ? props(this.state.store, this.props)
             : props
-        return React.createElement(Component, customProps)
+        let ComponentToCreate
+        if (typeof Component === "function") {
+          ComponentToCreate = functionWrapper(
+            Component as React.StatelessComponent<ComponentProps>
+          )
+        } else {
+          ComponentToCreate = Component
+        }
+        return React.createElement(ComponentToCreate, customProps)
       }
     })
   }

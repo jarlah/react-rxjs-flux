@@ -4,6 +4,15 @@ import { Observable } from "rxjs/Observable"
 import * as React from "react"
 import { mount } from "enzyme"
 import shallowToJson from "enzyme-to-json"
+import functionWrapper from "../src/functionWrapper"
+
+describe("functionWrapper", () => {
+  it("should render a functional component", () => {
+    const Wrapped = functionWrapper(() => <span>Hei</span>)
+    const wrapper = mount(<Wrapped />)
+    expect(shallowToJson(wrapper)).toMatchSnapshot()
+  })
+})
 
 describe("isRelevant", () => {
   it("should be relevant", () => {

@@ -35,3 +35,11 @@ exports[`RxInject is instantiable with Observable 2`] = `
   </NumberComp>
 </Inject>
 `
+
+exports[`functionWrapper should render a functional component 1`] = `
+<Unknown>
+  <span>
+    Hei
+  </span>
+</Unknown>
+`
