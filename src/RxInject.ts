@@ -22,13 +22,8 @@ export default function inject<ComponentProps, StoreProps, ParentProps>(
   props: PropsType<ComponentProps, StoreProps, ParentProps>
 ): Injector<ComponentProps, ParentProps> {
   return (Component: React.ComponentType<ComponentProps>) => {
-    type State = { store: StoreProps }
-    class Inject extends React.Component<ParentProps, State> {
-      state: State
-      storeSubscription: Subscription
-      devToolsSubscription: () => void
-      devTools: DevToolsInstance
-
+    return React.createClass({
+      displayName: "Inject",
       componentWillMount() {
         const devToolsExt = getDevToolsExt()
         if (devToolsExt) {
@@ -40,8 +35,7 @@ export default function inject<ComponentProps, StoreProps, ParentProps>(
             }
           })
         }
-      }
-
+      },
       componentDidMount() {
         const observable = getObservable(store, this.props)
         this.storeSubscription = observable.subscribe(storeProps => {
@@ -50,8 +44,7 @@ export default function inject<ComponentProps, StoreProps, ParentProps>(
           }
           this.setState({ store: storeProps })
         })
-      }
-
+      },
       componentWillUnmount() {
         this.storeSubscription.unsubscribe()
         const devToolsExt = getDevToolsExt()
@@ -59,8 +52,7 @@ export default function inject<ComponentProps, StoreProps, ParentProps>(
           this.devToolsSubscription()
           devToolsExt.disconnect()
         }
-      }
-
+      },
       render() {
         if (!this.state) {
           return null
@@ -69,10 +61,9 @@ export default function inject<ComponentProps, StoreProps, ParentProps>(
           typeof props === "function"
             ? props(this.state.store, this.props)
             : props
-        return <Component {...customProps} />
+        return React.createElement(Component, customProps)
       }
-    }
-    return Inject
+    })
   }
 }
 
