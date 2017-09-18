@@ -63,7 +63,8 @@
     "coveragePathIgnorePatterns": [
       "/node_modules/",
       "/test/",
-      "/src/JsxHelper.tsx"
+      "/src/JsxHelper.tsx",
+      "/src/Types.ts"
     ],
     "coverageThreshold": {
       "global": {

@@ -1,11 +1,21 @@
 import { inject, createStore } from "../src/react-rxjs"
 import { isDev } from "../src/RxStore"
-import { isRelevant } from "../src/RxInject"
+import { isRelevant, getExtension } from "../src/DevTools"
 import { Observable, Subject } from "rxjs"
 import * as React from "react"
 import { mount } from "enzyme"
 import shallowToJson from "enzyme-to-json"
 import { wrap, render } from "../src/JsxHelper"
+
+describe("getExtension", () => {
+  it("should return null if no extension in  dev mode", () => {
+    process.env.NODE_ENV = "development"
+    expect(getExtension()).toBe(null)
+  })
+  afterEach(() => {
+    delete process.env.NODE_ENV
+  })
+})
 
 describe("isDev", () => {
   it("should be dev if NODE_ENV is development", () => {
@@ -18,8 +28,6 @@ describe("isDev", () => {
   })
   afterEach(() => {
     delete process.env.NODE_ENV
-    delete window.__REDUX_DEVTOOLS_EXTENSION__
-    delete window.devToolsExtension
   })
 })
 
@@ -33,7 +41,7 @@ describe("render", () => {
 })
 
 describe("isRelevant", () => {
-  it("should be relevant", () => {
+  it("should be relevant jump to state", () => {
     expect(
       isRelevant({
         type: "DISPATCH",
@@ -41,6 +49,24 @@ describe("isRelevant", () => {
         payload: { type: "JUMP_TO_STATE" }
       })
     ).toBe(true)
+  })
+  it("should be relevant jump to action", () => {
+    expect(
+      isRelevant({
+        type: "DISPATCH",
+        state: 42,
+        payload: { type: "JUMP_TO_ACTION" }
+      })
+    ).toBe(true)
+  })
+  it("should not be relevant if wrong payload type", () => {
+    expect(
+      isRelevant({
+        type: "DISPATCH",
+        state: 42,
+        payload: { type: "SHIT" }
+      })
+    ).toBe(false)
   })
   it("should not be relevant", () => {
     expect(
@@ -76,7 +102,7 @@ describe("RxInject", () => {
             wrapper.update()
             expect(shallowToJson(wrapper)).toMatchSnapshot()
             done()
-          }, 500)
+          }, 0)
           return () => null
         },
         send: (name: string, state: number) => {
@@ -106,7 +132,7 @@ describe("RxInject", () => {
     }, 1000)
   })
 
-  it("is instantiable with Factory", () => {
+  it("is instantiable with Factory 1", () => {
     const NumberComp = (props: { number: number }) => (
       <span>{props.number}</span>
     )
@@ -121,6 +147,7 @@ describe("RxInject", () => {
     const wrapper = mount(<InjectedNumberComp />)
     expect(shallowToJson(wrapper)).toMatchSnapshot()
     wrapper.unmount()
+    delete process.env.NODE_ENV
   })
 
   it("is instantiable with Factory and class component", () => {
@@ -165,6 +192,7 @@ describe("RxInject", () => {
       done()
     }
   })
+
   afterEach(() => {
     delete process.env.NODE_ENV
     delete window.__REDUX_DEVTOOLS_EXTENSION__

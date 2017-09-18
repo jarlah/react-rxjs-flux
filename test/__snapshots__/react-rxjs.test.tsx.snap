@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`RxInject is instantiable with Factory 1`] = `
+exports[`RxInject is instantiable with Factory 1 1`] = `
 <Inject>
   <NumberComp
     number={0}
