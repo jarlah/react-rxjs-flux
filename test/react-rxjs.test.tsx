@@ -1,25 +1,33 @@
 import { inject, createStore } from "../src/react-rxjs"
+import { isDev } from "../src/RxStore"
 import { isRelevant } from "../src/RxInject"
-import { Observable } from "rxjs/Observable"
+import { Observable, Subject } from "rxjs"
 import * as React from "react"
 import { mount } from "enzyme"
 import shallowToJson from "enzyme-to-json"
 import { wrap, render } from "../src/JsxHelper"
 
-describe("render", () => {
-  it("should render component", () => {
-    const hello = () => <span>hello</span>
-    const RenderedHello = render(hello)
-    const wrapper = mount(RenderedHello)
-    expect(shallowToJson(wrapper)).toMatchSnapshot()
+describe("isDev", () => {
+  it("should be dev if NODE_ENV is development", () => {
+    process.env.NODE_ENV = "development"
+    expect(isDev()).toBe(true)
+  })
+  it("should NOT be dev if NODE_ENV is production", () => {
+    process.env.NODE_ENV = "production"
+    expect(isDev()).toBe(false)
+  })
+  afterEach(() => {
+    delete process.env.NODE_ENV
+    delete window.__REDUX_DEVTOOLS_EXTENSION__
+    delete window.devToolsExtension
   })
 })
 
-describe("wrap", () => {
-  it("should wrap around component", () => {
-    const hello = () => <span>hello</span>
-    const WrappedHello = wrap(hello)
-    const wrapper = mount(<WrappedHello />)
+describe("render", () => {
+  it("should render component", () => {
+    const hello = (p: { n: number }) => <span>{p.n}</span>
+    const RenderedHello = render(hello, { n: 1 })
+    const wrapper = mount(RenderedHello)
     expect(shallowToJson(wrapper)).toMatchSnapshot()
   })
 })
@@ -61,6 +69,9 @@ describe("RxInject", () => {
               type: "DISPATCH",
               state: 42,
               payload: { type: "JUMP_TO_STATE" }
+            })
+            fn({
+              type: "JADAJADA"
             })
             wrapper.update()
             expect(shallowToJson(wrapper)).toMatchSnapshot()
@@ -129,6 +140,9 @@ describe("RxInject", () => {
     const wrapper = mount(<InjectedNumberComp />)
     expect(shallowToJson(wrapper)).toMatchSnapshot()
     wrapper.unmount()
+    wrapper.mount()
+    expect(shallowToJson(wrapper)).toMatchSnapshot()
+    wrapper.unmount()
   })
 
   it("should fail horribly if passed wrong values", done => {
@@ -147,7 +161,7 @@ describe("RxInject", () => {
       expect(shallowToJson(wrapper)).toMatchSnapshot()
       fail("Should fail!")
     } catch (e) {
-      expect(e.message).toEqual("observable.subscribe is not a function")
+      expect(e.message).toEqual("getObservable(...).do is not a function")
       done()
     }
   })
@@ -173,19 +187,25 @@ describe("RxStore", () => {
 
     let next = 0
 
+    const action = new Subject<void>()
+
     const store$ = createStore(
       "test",
-      Observable.of((state: number) => state + 1),
-      next
+      action.map(() => (state: number) => state + 1),
+      next,
+      true
     )
 
     store$.subscribe((n: number) => {
       expect(n).toBe(next)
-      if (next > 0) {
+      if (n === 2) {
         done()
+      } else {
+        next++
       }
-      next++
     })
+    setTimeout(action.next.bind(action), 0)
+    setTimeout(action.next.bind(action), 0)
   })
 
   afterEach(() => {

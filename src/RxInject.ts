@@ -1,10 +1,10 @@
 import * as React from "react"
-import { Observable } from "rxjs"
-import { wrap, render } from "./JsxHelper"
+import { Observable, Subscription } from "rxjs"
+import { render } from "./JsxHelper"
 
 export type Injector<ComponentProps, ParentProps> = (
   Component: React.ComponentType<ComponentProps>
-) => React.ComponentClass<ParentProps>
+) => React.ComponentType<ParentProps>
 
 export type PropsType<ComponentProps, StoreProps, UpstreamProps> = (
   store: StoreProps,
@@ -14,6 +14,7 @@ export type PropsType<ComponentProps, StoreProps, UpstreamProps> = (
 export type Store<ParentProps, StoreProps> =
   | Observable<StoreProps>
   | StoreFactory<ParentProps, StoreProps>
+
 export type StoreFactory<ParentProps, StoreProps> = (
   props: ParentProps
 ) => Observable<StoreProps>
@@ -24,8 +25,12 @@ export default function inject<ComponentProps, StoreProps, ParentProps>(
 ): Injector<ComponentProps, ParentProps> {
   return (Component: React.ComponentType<ComponentProps>) => {
     type State = { store: StoreProps }
-    return React.createClass<ParentProps, State>({
-      displayName: "Inject",
+    class Inject extends React.Component<ParentProps, State> {
+      state: State
+      storeSubscription: Subscription
+      devToolsSubscription: () => void
+      devTools: DevToolsInstance
+
       componentWillMount() {
         const devToolsExt = getDevToolsExt()
         if (devToolsExt) {
@@ -37,16 +42,23 @@ export default function inject<ComponentProps, StoreProps, ParentProps>(
             }
           })
         }
-      },
+      }
+
+      sendToDevTools(store: StoreProps) {
+        this.devTools && this.devTools.send("update", store)
+      }
+
+      updateState(store: StoreProps) {
+        this.setState({ store })
+      }
+
       componentDidMount() {
-        const observable = getObservable(store, this.props)
-        this.storeSubscription = observable.subscribe(storeProps => {
-          if (this.devTools) {
-            this.devTools.send("update", storeProps)
-          }
-          this.setState({ store: storeProps })
-        })
-      },
+        this.storeSubscription = getObservable(store, this.props)
+          .do(this.sendToDevTools.bind(this))
+          .do(this.updateState.bind(this))
+          .subscribe()
+      }
+
       componentWillUnmount() {
         this.storeSubscription.unsubscribe()
         const devToolsExt = getDevToolsExt()
@@ -54,7 +66,8 @@ export default function inject<ComponentProps, StoreProps, ParentProps>(
           this.devToolsSubscription()
           devToolsExt.disconnect()
         }
-      },
+      }
+
       render() {
         if (!this.state) {
           return null
@@ -63,36 +76,27 @@ export default function inject<ComponentProps, StoreProps, ParentProps>(
           typeof props === "function"
             ? props(this.state.store, this.props)
             : props
-        let ComponentToCreate
-        if (!React.Component.isPrototypeOf(Component)) {
-          ComponentToCreate = wrap(Component as React.StatelessComponent<
-            ComponentProps
-          >)
-        } else {
-          ComponentToCreate = Component
-        }
-        return render(ComponentToCreate, customProps)
+        return render(Component, customProps)
       }
-    })
+    }
+    return Inject
   }
 }
 
-function getDevToolsExt(): DevTools | undefined {
+function getDevToolsExt(): DevTools | null {
   if (process.env.NODE_ENV === "development" && typeof window !== "undefined") {
-    return window.__REDUX_DEVTOOLS_EXTENSION__ && window.devToolsExtension
+    const ext = window.__REDUX_DEVTOOLS_EXTENSION__ && window.devToolsExtension
+    if (ext) {
+      return ext
+    }
   }
+  return null
 }
 
 function getObservable<P, T>(store: Store<P, T>, parentPops: P): Observable<T> {
-  let observable: Observable<T>
-  if (store instanceof Observable) {
-    observable = store
-  } else if (typeof store === "function") {
-    observable = store(parentPops)
-  } else {
-    observable = store
-  }
-  return observable
+  return store instanceof Observable
+    ? store as Observable<T>
+    : typeof store === "function" ? store(parentPops) : store as Observable<T>
 }
 
 export type Message = {
