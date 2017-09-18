@@ -4,6 +4,7 @@ const functionWrapper = function<P>(
   Component: React.StatelessComponent<P>
 ): React.ComponentClass<P> {
   class Wrapper extends React.Component<P, {}> {
+    static displayName: string
     render() {
       return Component(this.props)
     }
