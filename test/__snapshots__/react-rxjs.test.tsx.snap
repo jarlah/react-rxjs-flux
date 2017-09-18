@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`RxInject is instantiable with Factory 1 1`] = `
+exports[`RxInject is instantiable with Factory abd props function 1`] = `
 <Inject>
   <NumberComp
     number={0}
@@ -45,6 +45,18 @@ exports[`RxInject is instantiable with Observable 2`] = `
   >
     <span>
       42
+    </span>
+  </NumberComp>
+</Inject>
+`
+
+exports[`RxInject is instantiable with props object 1`] = `
+<Inject>
+  <NumberComp
+    number={5000}
+  >
+    <span>
+      5000
     </span>
   </NumberComp>
 </Inject>
