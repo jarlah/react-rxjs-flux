@@ -3,7 +3,7 @@
 > A small library for creating applications based on unidirectional data flow with RxJS.
 
 [![Build Status](https://travis-ci.org/jarlah/react-rxjs.svg?branch=master)](https://travis-ci.org/jarlah/react-rxjs)
-[![Coverage Status](https://coveralls.io/repos/github/jarlah/react-rxjs/badge.svg?branch=master)](https://coveralls.io/github/jarlah/react-rxjs?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/jarlah/react-rxjs/badge.svg?branch=master&q=2017)](https://coveralls.io/github/jarlah/react-rxjs?branch=master)
 
 ## Install
 
