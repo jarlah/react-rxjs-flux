@@ -1,18 +1,15 @@
 import * as React from "react"
 
-function getDisplayName<P>(Component: React.StatelessComponent<P>): string {
-  return Component.displayName || Component.name || "Unknown"
-}
-
 const functionWrapper = function<P>(
-  functionalComponent: React.StatelessComponent<P>
+  Component: React.StatelessComponent<P>
 ): React.ComponentClass<P> {
-  return class extends React.Component<P, {}> {
-    static displayName = getDisplayName(functionalComponent)
+  class Wrapper extends React.Component<P, {}> {
     render() {
-      return functionalComponent(this.props)
+      return Component(this.props)
     }
   }
+  Wrapper.displayName = Component.displayName || Component.name || "Unknown"
+  return Wrapper
 }
 
 export default functionWrapper
