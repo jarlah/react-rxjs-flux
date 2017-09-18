@@ -4,15 +4,6 @@ import { Observable } from "rxjs/Observable"
 import * as React from "react"
 import { mount } from "enzyme"
 import shallowToJson from "enzyme-to-json"
-import functionWrapper from "../src/functionWrapper"
-
-describe("functionWrapper", () => {
-  it("should render a functional component", () => {
-    const Wrapped = functionWrapper(() => <span>Hei</span>)
-    const wrapper = mount(<Wrapped />)
-    expect(shallowToJson(wrapper)).toMatchSnapshot()
-  })
-})
 
 describe("isRelevant", () => {
   it("should be relevant", () => {
@@ -94,6 +85,25 @@ describe("RxInject", () => {
       () => Observable.of(0),
       (storeProps: number) => ({ number: storeProps })
     )(NumberComp)
+
+    expect(InjectedNumberComp).toBeInstanceOf(Function)
+
+    const wrapper = mount(<InjectedNumberComp />)
+    expect(shallowToJson(wrapper)).toMatchSnapshot()
+    wrapper.unmount()
+  })
+
+  it("is instantiable with Factory and class component", () => {
+    class NumberComp2 extends React.Component<{ number: number }, {}> {
+      render() {
+        return <span>{this.props.number}</span>
+      }
+    }
+
+    const InjectedNumberComp = inject(
+      () => Observable.of(0),
+      (storeProps: number) => ({ number: storeProps })
+    )(NumberComp2)
 
     expect(InjectedNumberComp).toBeInstanceOf(Function)
 

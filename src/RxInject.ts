@@ -1,6 +1,5 @@
 import * as React from "react"
 import { Observable } from "rxjs"
-import functionWrapper from "./functionWrapper"
 
 export type Injector<ComponentProps, ParentProps> = (
   Component: React.ComponentType<ComponentProps>
@@ -64,7 +63,7 @@ export default function inject<ComponentProps, StoreProps, ParentProps>(
             ? props(this.state.store, this.props)
             : props
         let ComponentToCreate
-        if (typeof Component === "function") {
+        if (!React.Component.isPrototypeOf(Component)) {
           ComponentToCreate = functionWrapper(
             Component as React.StatelessComponent<ComponentProps>
           )
@@ -126,4 +125,15 @@ export function isRelevant(message: Message): boolean {
     (message.payload.type === "JUMP_TO_ACTION" ||
       message.payload.type === "JUMP_TO_STATE")
   )
+}
+
+function functionWrapper<P>(Component) {
+  class Wrapper extends React.Component<P, {}> {
+    static displayName: string
+    render() {
+      return Component(this.props)
+    }
+  }
+  Wrapper.displayName = Component.displayName || Component.name || "Unknown"
+  return Wrapper
 }

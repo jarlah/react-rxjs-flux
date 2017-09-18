@@ -12,6 +12,18 @@ exports[`RxInject is instantiable with Factory 1`] = `
 </Inject>
 `
 
+exports[`RxInject is instantiable with Factory and class component 1`] = `
+<Inject>
+  <NumberComp2
+    number={0}
+  >
+    <span>
+      0
+    </span>
+  </NumberComp2>
+</Inject>
+`
+
 exports[`RxInject is instantiable with Observable 1`] = `
 <Inject>
   <NumberComp
@@ -34,12 +46,4 @@ exports[`RxInject is instantiable with Observable 2`] = `
     </span>
   </NumberComp>
 </Inject>
-`
-
-exports[`functionWrapper should render a functional component 1`] = `
-<Unknown>
-  <span>
-    Hei
-  </span>
-</Unknown>
 `
