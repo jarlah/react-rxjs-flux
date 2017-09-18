@@ -4,9 +4,18 @@ import { Observable } from "rxjs/Observable"
 import * as React from "react"
 import { mount } from "enzyme"
 import shallowToJson from "enzyme-to-json"
-import wrap from "../src/Wrapper"
+import { wrap, render } from "../src/JsxHelper"
 
-describe("Wrapper", () => {
+describe("render", () => {
+  it("should render component", () => {
+    const hello = () => <span>hello</span>
+    const RenderedHello = render(hello)
+    const wrapper = mount(RenderedHello)
+    expect(shallowToJson(wrapper)).toMatchSnapshot()
+  })
+})
+
+describe("wrap", () => {
   it("should wrap around component", () => {
     const hello = () => <span>hello</span>
     const WrappedHello = wrap(hello)

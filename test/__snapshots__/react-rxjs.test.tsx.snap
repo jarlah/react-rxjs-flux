@@ -60,7 +60,15 @@ exports[`RxInject is instantiable with Observable 2`] = `
 </Inject>
 `
 
-exports[`Wrapper should wrap around component 1`] = `
+exports[`render should render component 1`] = `
+<hello>
+  <span>
+    hello
+  </span>
+</hello>
+`
+
+exports[`wrap should wrap around component 1`] = `
 <helloWrapper>
   <hello>
     <span>

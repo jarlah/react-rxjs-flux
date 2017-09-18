@@ -1,6 +1,6 @@
 import * as React from "react"
 import { Observable } from "rxjs"
-import wrap from "./Wrapper"
+import { wrap, render } from "./JsxHelper"
 
 export type Injector<ComponentProps, ParentProps> = (
   Component: React.ComponentType<ComponentProps>
@@ -71,7 +71,7 @@ export default function inject<ComponentProps, StoreProps, ParentProps>(
         } else {
           ComponentToCreate = Component
         }
-        return React.createElement(ComponentToCreate, customProps)
+        return render(ComponentToCreate, customProps)
       }
     })
   }
