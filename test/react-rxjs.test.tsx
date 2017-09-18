@@ -101,7 +101,6 @@ describe("RxInject", () => {
             })
             wrapper.update()
             expect(shallowToJson(wrapper)).toMatchSnapshot()
-            done()
           }, 0)
           return () => null
         },
@@ -129,7 +128,8 @@ describe("RxInject", () => {
     expect(shallowToJson(wrapper)).toMatchSnapshot()
     setTimeout(() => {
       wrapper.unmount()
-    }, 1000)
+      done()
+    }, 500)
   })
 
   it("is instantiable with Factory 1", () => {
