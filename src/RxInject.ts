@@ -1,5 +1,6 @@
 import * as React from "react"
 import { Observable } from "rxjs"
+import wrap from "./Wrapper"
 
 export type Injector<ComponentProps, ParentProps> = (
   Component: React.ComponentType<ComponentProps>
@@ -64,9 +65,9 @@ export default function inject<ComponentProps, StoreProps, ParentProps>(
             : props
         let ComponentToCreate
         if (!React.Component.isPrototypeOf(Component)) {
-          ComponentToCreate = functionWrapper(
-            Component as React.StatelessComponent<ComponentProps>
-          )
+          ComponentToCreate = wrap(Component as React.StatelessComponent<
+            ComponentProps
+          >)
         } else {
           ComponentToCreate = Component
         }
@@ -125,15 +126,4 @@ export function isRelevant(message: Message): boolean {
     (message.payload.type === "JUMP_TO_ACTION" ||
       message.payload.type === "JUMP_TO_STATE")
   )
-}
-
-function functionWrapper<P>(Component) {
-  class Wrapper extends React.Component<P, {}> {
-    static displayName: string
-    render() {
-      return Component(this.props)
-    }
-  }
-  Wrapper.displayName = Component.displayName || Component.name || "Unknown"
-  return Wrapper
 }

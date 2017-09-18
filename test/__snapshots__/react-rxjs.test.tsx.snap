@@ -2,13 +2,17 @@
 
 exports[`RxInject is instantiable with Factory 1`] = `
 <Inject>
-  <NumberComp
+  <NumberCompWrapper
     number={0}
   >
-    <span>
-      0
-    </span>
-  </NumberComp>
+    <NumberComp
+      number={0}
+    >
+      <span>
+        0
+      </span>
+    </NumberComp>
+  </NumberCompWrapper>
 </Inject>
 `
 
@@ -26,24 +30,42 @@ exports[`RxInject is instantiable with Factory and class component 1`] = `
 
 exports[`RxInject is instantiable with Observable 1`] = `
 <Inject>
-  <NumberComp
+  <NumberCompWrapper
     number={2}
   >
-    <span>
-      2
-    </span>
-  </NumberComp>
+    <NumberComp
+      number={2}
+    >
+      <span>
+        2
+      </span>
+    </NumberComp>
+  </NumberCompWrapper>
 </Inject>
 `
 
 exports[`RxInject is instantiable with Observable 2`] = `
 <Inject>
-  <NumberComp
+  <NumberCompWrapper
     number={42}
   >
-    <span>
-      42
-    </span>
-  </NumberComp>
+    <NumberComp
+      number={42}
+    >
+      <span>
+        42
+      </span>
+    </NumberComp>
+  </NumberCompWrapper>
 </Inject>
+`
+
+exports[`Wrapper should wrap around component 1`] = `
+<helloWrapper>
+  <hello>
+    <span>
+      hello
+    </span>
+  </hello>
+</helloWrapper>
 `
