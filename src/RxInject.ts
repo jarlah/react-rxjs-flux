@@ -2,7 +2,7 @@ import * as React from "react"
 import { Observable, Subscription } from "rxjs"
 
 export type Injector<ComponentProps, ParentProps> = (
-  Component: React.ComponentType<ComponentProps>
+  Component: React.ComponentClass<ComponentProps>
 ) => React.ComponentClass<ParentProps>
 
 export type PropsType<ComponentProps, StoreProps, UpstreamProps> = (
@@ -21,8 +21,9 @@ export default function inject<ComponentProps, StoreProps, ParentProps>(
   store: Store<ParentProps, StoreProps>,
   props: PropsType<ComponentProps, StoreProps, ParentProps>
 ): Injector<ComponentProps, ParentProps> {
-  return (Component: React.ComponentType<ComponentProps>) => {
-    return React.createClass({
+  return (Component: React.ComponentClass<ComponentProps>) => {
+    type State = { store: StoreProps }
+    return React.createClass<ParentProps, State>({
       displayName: "Inject",
       componentWillMount() {
         const devToolsExt = getDevToolsExt()
