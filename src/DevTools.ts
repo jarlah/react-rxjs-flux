@@ -12,7 +12,7 @@ export type DevToolsInstance = {
 }
 
 export type DevToolsExtension = {
-  connect: () => DevToolsInstance
+  connect: (config?: { name?: string }) => DevToolsInstance
   disconnect: () => void
 }
 
@@ -38,7 +38,7 @@ export function isRelevant(message: Message): boolean {
 
 export function getExtension(): DevToolsExtension | null {
   if (process.env.NODE_ENV === "development" && typeof window !== "undefined") {
-    const ext = window.__REDUX_DEVTOOLS_EXTENSION__ && window.devToolsExtension
+    const ext = window.__REDUX_DEVTOOLS_EXTENSION__ || window.devToolsExtension
     if (ext) {
       return ext
     }

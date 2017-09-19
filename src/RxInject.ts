@@ -1,36 +1,50 @@
 import * as React from "react"
-import { Observable, Subscription } from "rxjs"
 import { render } from "./JsxHelper"
+import { Observable, Subscription } from "rxjs"
 import { Store, PropsType, Injector } from "./RxTypes"
-import { DevToolsInstance, getExtension, isRelevant } from "./DevTools"
+import {
+  DevToolsExtension,
+  DevToolsInstance,
+  getExtension,
+  isRelevant
+} from "./DevTools"
 
 export default function inject<ComponentProps, StoreProps, ParentProps>(
   store: Store<ParentProps, StoreProps>,
-  props: PropsType<ComponentProps, StoreProps, ParentProps>
+  props: PropsType<ComponentProps, StoreProps, ParentProps>,
+  _devTools?: DevToolsExtension
 ): Injector<ComponentProps, ParentProps> {
+  const devTools: DevToolsExtension | null = _devTools
+    ? _devTools
+    : getExtension()
   return (Component: React.ComponentType<ComponentProps>) => {
     type State = { store: StoreProps }
     class Inject extends React.Component<ParentProps, State> {
       state: State
       storeSubscription: Subscription
       devToolsSubscription: () => void
-      devTools: DevToolsInstance
+      devToolsInstance: DevToolsInstance
 
       componentWillMount() {
-        const devToolsExt = getExtension()
-        if (devToolsExt) {
-          this.devTools = devToolsExt.connect()
-          this.devToolsSubscription = this.devTools.subscribe(message => {
-            if (isRelevant(message)) {
-              const props: StoreProps = JSON.parse(message.state)
-              this.setState({ store: props })
-            }
+        if (devTools) {
+          this.devToolsInstance = devTools.connect({
+            name:
+              (Component.displayName || Component.name || "Unknown") +
+              "Container"
           })
+          this.devToolsSubscription = this.devToolsInstance.subscribe(
+            message => {
+              if (isRelevant(message)) {
+                const props: StoreProps = JSON.parse(message.state)
+                this.setState({ store: props })
+              }
+            }
+          )
         }
       }
 
       sendToDevTools(store: StoreProps) {
-        this.devTools && this.devTools.send("update", store)
+        this.devToolsInstance && this.devToolsInstance.send("update", store)
       }
 
       updateState(store: StoreProps) {
@@ -46,10 +60,9 @@ export default function inject<ComponentProps, StoreProps, ParentProps>(
 
       componentWillUnmount() {
         this.storeSubscription.unsubscribe()
-        const devToolsExt = getExtension()
-        if (devToolsExt) {
+        if (devTools) {
           this.devToolsSubscription()
-          devToolsExt.disconnect()
+          devTools.disconnect()
         }
       }
 
@@ -71,5 +84,5 @@ export default function inject<ComponentProps, StoreProps, ParentProps>(
 function getObservable<P, T>(store: Store<P, T>, parentPops: P): Observable<T> {
   return store instanceof Observable
     ? store as Observable<T>
-    : typeof store === "function" ? store(parentPops) : store as Observable<T>
+    : store(parentPops)
 }

@@ -10,10 +10,46 @@ import { wrap, render } from "../src/JsxHelper"
 describe("getExtension", () => {
   it("should return null if no extension in  dev mode", () => {
     process.env.NODE_ENV = "development"
-    expect(getExtension()).toBe(null)
+    const extension = getExtension()
+    expect(extension).toBe(null)
+  })
+  it("should return null if exists but not in dev mode", () => {
+    process.env.NODE_ENV = "production"
+    window.__REDUX_DEVTOOLS_EXTENSION__ = createDummyDevTools(
+      () => null,
+      () => null,
+      () => null
+    )
+    const extension = getExtension()
+    expect(extension).toBe(null)
+  })
+  it("should return extension if exists in dev mode", () => {
+    process.env.NODE_ENV = "development"
+    window.__REDUX_DEVTOOLS_EXTENSION__ = createDummyDevTools(
+      () => null,
+      () => null,
+      () => null
+    )
+    const extension = getExtension()
+    expect(extension).not.toBe(null)
+  })
+  it("should call disconnect", done => {
+    process.env.NODE_ENV = "development"
+    window.__REDUX_DEVTOOLS_EXTENSION__ = createDummyDevTools(
+      () => null,
+      () => null,
+      () => null,
+      () => {
+        done()
+      }
+    )
+    const extension = getExtension()
+    expect(extension).not.toBe(null)
+    extension.disconnect()
   })
   afterEach(() => {
     delete process.env.NODE_ENV
+    delete window.__REDUX_DEVTOOLS_EXTENSION__
   })
 })
 
@@ -77,40 +113,65 @@ describe("isRelevant", () => {
   })
 })
 
-describe("RxInject", () => {
-  it("is instantiable with Observable", done => {
-    process.env.NODE_ENV = "development"
-    window.__REDUX_DEVTOOLS_EXTENSION__ = true
-    let next = 0
-    let wrapper
-    window.devToolsExtension = {
-      connect: () => ({
-        subscribe: (
-          fn: (
-            msg: { type: string; state: any; payload: { type: string } }
-          ) => void
-        ) => {
-          setTimeout(() => {
-            fn({
-              type: "DISPATCH",
-              state: 42,
-              payload: { type: "JUMP_TO_STATE" }
-            })
-            fn({
-              type: "JADAJADA"
-            })
-            wrapper.update()
-            expect(shallowToJson(wrapper)).toMatchSnapshot()
-          }, 0)
+type OnSubscribeFn = (
+  msg: { type: string; state: any; payload: { type: string } }
+) => void
+type OnMessageFn = (name: string, state: number) => void
+
+function createDummyDevTools(
+  onConnect: (config?: { name: string }) => void,
+  onSubscribe: (fn: OnSubscribeFn) => void,
+  onMessage: OnMessageFn,
+  onDisconnect?: () => void
+) {
+  return {
+    connect: (config?: { name: string }) => {
+      onConnect(config)
+      return {
+        subscribe: (fn: OnSubscribeFn) => {
+          onSubscribe(fn)
           return () => null
         },
-        send: (name: string, state: number) => {
-          expect(state).toEqual(next)
-          next++
-        }
-      }),
-      disconnect: () => null
+        send: onMessage
+      }
+    },
+    disconnect: onDisconnect ? onDisconnect : () => null
+  }
+}
+
+describe("RxInject", () => {
+  it("is instantiable with Observable", done => {
+    let next = 0
+    let wrapper
+    let nameChecked = false
+
+    const onSubscribe = fn => {
+      setTimeout(() => {
+        fn({
+          type: "DISPATCH",
+          state: 42,
+          payload: { type: "JUMP_TO_STATE" }
+        })
+        fn({
+          type: "JADAJADA"
+        })
+        wrapper.update()
+        expect(shallowToJson(wrapper)).toMatchSnapshot()
+      }, 0)
     }
+
+    const onMessage = (name, state) => {
+      expect(state).toEqual(next)
+      next++
+    }
+
+    const onConnect = config => {
+      expect(config).not.toBeNull()
+      expect(config.name).toEqual("NumberCompContainer")
+      nameChecked = true
+    }
+
+    const devTools = createDummyDevTools(onConnect, onSubscribe, onMessage)
 
     const NumberComp = (props: { number: number }) => (
       <span>{props.number}</span>
@@ -118,9 +179,13 @@ describe("RxInject", () => {
 
     const stream = Observable.of(0, 1, 2)
 
-    const InjectedNumberComp = inject(stream, (storeProps: number) => ({
-      number: storeProps
-    }))(NumberComp)
+    const InjectedNumberComp = inject(
+      stream,
+      (storeProps: number) => ({
+        number: storeProps
+      }),
+      devTools
+    )(NumberComp)
 
     expect(InjectedNumberComp).toBeInstanceOf(Function)
 
@@ -128,6 +193,7 @@ describe("RxInject", () => {
     expect(shallowToJson(wrapper)).toMatchSnapshot()
     setTimeout(() => {
       wrapper.unmount()
+      expect(nameChecked).toBeTruthy()
       done()
     }, 500)
   })
@@ -163,7 +229,6 @@ describe("RxInject", () => {
     const wrapper = mount(<InjectedNumberComp />)
     expect(shallowToJson(wrapper)).toMatchSnapshot()
     wrapper.unmount()
-    delete process.env.NODE_ENV
   })
 
   it("is instantiable with Factory and class component", () => {
@@ -200,15 +265,9 @@ describe("RxInject", () => {
       expect(shallowToJson(wrapper)).toMatchSnapshot()
       fail("Should fail!")
     } catch (e) {
-      expect(e.message).toEqual("getObservable(...).do is not a function")
+      expect(e.message).toEqual("store is not a function")
       done()
     }
-  })
-
-  afterEach(() => {
-    delete process.env.NODE_ENV
-    delete window.__REDUX_DEVTOOLS_EXTENSION__
-    delete window.devToolsExtension
   })
 })
 
@@ -223,8 +282,6 @@ describe("RxStore", () => {
   })
 
   it("gets state updates from reducer", done => {
-    process.env.NODE_ENV = "development"
-
     let next = 0
 
     const action = new Subject<void>()
@@ -246,9 +303,5 @@ describe("RxStore", () => {
     })
     setTimeout(action.next.bind(action), 0)
     setTimeout(action.next.bind(action), 0)
-  })
-
-  afterEach(() => {
-    delete process.env.NODE_ENV
   })
 })
