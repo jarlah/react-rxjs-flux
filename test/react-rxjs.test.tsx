@@ -218,6 +218,22 @@ describe("RxInject", () => {
     wrapper.unmount()
   })
 
+  it("is instantiable with props object and nulled devtools", () => {
+    const NumberComp = (props: { number: number }) => (
+      <span>{props.number}</span>
+    )
+
+    const InjectedNumberComp = inject(Observable.of(0), { number: 5000 }, null)(
+      NumberComp
+    )
+
+    expect(InjectedNumberComp).toBeInstanceOf(Function)
+
+    const wrapper = mount(<InjectedNumberComp />)
+    expect(shallowToJson(wrapper)).toMatchSnapshot()
+    wrapper.unmount()
+  })
+
   it("is instantiable with Factory abd props function", () => {
     const NumberComp = (props: { number: number }) => (
       <span>{props.number}</span>

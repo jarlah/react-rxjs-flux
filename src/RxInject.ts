@@ -14,7 +14,8 @@ export default function inject<ComponentProps, StoreProps, ParentProps>(
   props: PropsType<ComponentProps, StoreProps, ParentProps>,
   _devTools?: DevToolsExtension
 ): Injector<ComponentProps, ParentProps> {
-  const devTools: DevToolsExtension | null = _devTools || getExtension()
+  const devTools: DevToolsExtension | null =
+    typeof _devTools !== "undefined" ? _devTools : getExtension()
   return (Component: React.ComponentType<ComponentProps>) => {
     class Inject extends React.Component<ParentProps, { store: StoreProps }> {
       storeSubscription: Subscription

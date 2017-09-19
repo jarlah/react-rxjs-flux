@@ -60,6 +60,18 @@ exports[`RxInject is instantiable with props object 1`] = `
 </Inject>
 `
 
+exports[`RxInject is instantiable with props object and nulled devtools 1`] = `
+<Inject>
+  <NumberComp
+    number={5000}
+  >
+    <span>
+      5000
+    </span>
+  </NumberComp>
+</Inject>
+`
+
 exports[`render should render component 1`] = `
 <hello
   n={1}
