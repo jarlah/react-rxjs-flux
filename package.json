@@ -25,9 +25,9 @@
     "start": "node ./node_modules/.bin/tsc-watch --jsx react --onSuccess \"rollup -c\"",
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:prod": "npm run lint && npm run test -- --coverage --no-cache",
+    "test:prod": "npm run lint && npm run test -- --coverage --no-cache && node remap_coverage.js",
     "deploy-docs": "ts-node tools/gh-pages-publish",
-    "report-coverage": "cat ./coverage/lcov.info | coveralls",
+    "report-coverage": "cat ./coverage_remapped/coverage.lcov | coveralls",
     "commit": "git-cz",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post",
     "semantic-release-prepare": "ts-node tools/semantic-release-prepare",
@@ -58,7 +58,9 @@
     "moduleFileExtensions": [
       "ts",
       "tsx",
-      "js"
+      "js",
+      "jsx",
+      "json"
     ],
     "coveragePathIgnorePatterns": [
       "/node_modules/",
@@ -98,6 +100,7 @@
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
     "react-test-renderer": "^15.6.1",
+    "remap-istanbul": "^0.9.5",
     "replace-in-file": "^2.5.0",
     "rimraf": "^2.6.1",
     "rollup": "^0.49.0",

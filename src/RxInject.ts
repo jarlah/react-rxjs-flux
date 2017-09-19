@@ -1,5 +1,5 @@
 import * as React from "react"
-import { render } from "./JsxHelper"
+import { render, getName } from "./JsxHelper"
 import { Observable, Subscription } from "rxjs"
 import { Store, PropsType, Injector } from "./RxTypes"
 import {
@@ -14,13 +14,9 @@ export default function inject<ComponentProps, StoreProps, ParentProps>(
   props: PropsType<ComponentProps, StoreProps, ParentProps>,
   _devTools?: DevToolsExtension
 ): Injector<ComponentProps, ParentProps> {
-  const devTools: DevToolsExtension | null = _devTools
-    ? _devTools
-    : getExtension()
+  const devTools: DevToolsExtension | null = _devTools || getExtension()
   return (Component: React.ComponentType<ComponentProps>) => {
-    type State = { store: StoreProps }
-    class Inject extends React.Component<ParentProps, State> {
-      state: State
+    class Inject extends React.Component<ParentProps, { store: StoreProps }> {
       storeSubscription: Subscription
       devToolsSubscription: () => void
       devToolsInstance: DevToolsInstance
@@ -28,9 +24,7 @@ export default function inject<ComponentProps, StoreProps, ParentProps>(
       componentWillMount() {
         if (devTools) {
           this.devToolsInstance = devTools.connect({
-            name:
-              (Component.displayName || Component.name || "Unknown") +
-              "Container"
+            name: `${getName(Component)}Container`
           })
           this.devToolsSubscription = this.devToolsInstance.subscribe(
             message => {
@@ -52,7 +46,8 @@ export default function inject<ComponentProps, StoreProps, ParentProps>(
       }
 
       componentDidMount() {
-        this.storeSubscription = getObservable(store, this.props)
+        const observable = getObservable(store, this.props)
+        this.storeSubscription = observable
           .do(this.sendToDevTools.bind(this))
           .do(this.updateState.bind(this))
           .subscribe()
@@ -82,7 +77,5 @@ export default function inject<ComponentProps, StoreProps, ParentProps>(
 }
 
 function getObservable<P, T>(store: Store<P, T>, parentPops: P): Observable<T> {
-  return store instanceof Observable
-    ? store as Observable<T>
-    : store(parentPops)
+  return store instanceof Observable ? store : store(parentPops)
 }
