@@ -7,9 +7,16 @@ import { mount } from "enzyme"
 import shallowToJson from "enzyme-to-json"
 import { wrap, render } from "../src/JsxHelper"
 
+beforeEach(() => {
+  process.env.NODE_ENV = "development"
+})
+
+afterEach(() => {
+  delete process.env.NODE_ENV
+})
+
 describe("getExtension", () => {
   it("should return null if no extension in  dev mode", () => {
-    process.env.NODE_ENV = "development"
     const extension = getExtension()
     expect(extension).toBe(null)
   })
@@ -24,7 +31,6 @@ describe("getExtension", () => {
     expect(extension).toBe(null)
   })
   it("should return extension if exists in dev mode", () => {
-    process.env.NODE_ENV = "development"
     window.__REDUX_DEVTOOLS_EXTENSION__ = createDummyDevTools(
       () => null,
       () => null,
@@ -34,7 +40,6 @@ describe("getExtension", () => {
     expect(extension).not.toBe(null)
   })
   it("should call disconnect", done => {
-    process.env.NODE_ENV = "development"
     window.__REDUX_DEVTOOLS_EXTENSION__ = createDummyDevTools(
       () => null,
       () => null,
@@ -55,7 +60,6 @@ describe("getExtension", () => {
 
 describe("isDev", () => {
   it("should be dev if NODE_ENV is development", () => {
-    process.env.NODE_ENV = "development"
     expect(isDev()).toBe(true)
   })
   it("should NOT be dev if NODE_ENV is production", () => {
