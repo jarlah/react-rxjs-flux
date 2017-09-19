@@ -25,17 +25,13 @@ export type MyProps = {
   dec: () => void 
 };
 
-class MyComponent extends React.Component<MyProps, {}> {
-    render() {
-        return (
-          <div>
-            {this.props.number}
-            <button onClick={this.props.inc}>+</button>
-            <button onClick={this.props.dec}>-</button>
-          </div>
-        );
-    }
-}
+const MyComponent = (props: MyProps) => (
+    <div>
+      {this.props.number}
+      <button onClick={this.props.inc}>+</button>
+      <button onClick={this.props.dec}>-</button>
+    </div>
+);
 
 export default MyComponent;
 ```
