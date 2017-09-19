@@ -64,15 +64,14 @@
     ],
     "coveragePathIgnorePatterns": [
       "/node_modules/",
-      "/test/",
-      "/src/JsxHelper.tsx"
+      "/test/"
     ],
     "coverageThreshold": {
       "global": {
-        "branches": 80,
-        "functions": 91,
-        "lines": 96,
-        "statements": 93
+        "branches": 81,
+        "functions": 88,
+        "lines": 89,
+        "statements": 86
       }
     }
   },

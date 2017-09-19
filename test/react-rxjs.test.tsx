@@ -5,7 +5,7 @@ import { Observable, Subject } from "rxjs"
 import * as React from "react"
 import { mount } from "enzyme"
 import shallowToJson from "enzyme-to-json"
-import { wrap, render } from "../src/JsxHelper"
+import { getName, render } from "../src/JsxHelper"
 
 beforeEach(() => {
   process.env.NODE_ENV = "development"
@@ -77,6 +77,13 @@ describe("render", () => {
     const RenderedHello = render(hello, { n: 1 })
     const wrapper = mount(RenderedHello)
     expect(shallowToJson(wrapper)).toMatchSnapshot()
+  })
+})
+
+describe("getName", () => {
+  it("should return Unknown for something other than component", () => {
+    const name = getName("hi")
+    expect(name).toEqual("Unknown")
   })
 })
 
