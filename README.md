@@ -78,4 +78,4 @@ export default inject(store$, props)(MyComponent);
 
 [MIT](http://vjpr.mit-license.org)
 
-This project is a fork and rewrite of the original code from [MUSIT Norway](https://gitlab.com/MUSIT-Norway/react-rxjs)
+This project is a port and rewrite of the original code from [MUSIT Norway](https://gitlab.com/MUSIT-Norway/react-rxjs)
