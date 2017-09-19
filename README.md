@@ -27,9 +27,9 @@ export type MyProps = {
 
 const MyComponent = (props: MyProps) => (
     <div>
-      {this.props.number}
-      <button onClick={this.props.inc}>+</button>
-      <button onClick={this.props.dec}>-</button>
+      {props.number}
+      <button onClick={props.inc}>+</button>
+      <button onClick={props.dec}>-</button>
     </div>
 );
 
