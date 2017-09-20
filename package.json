@@ -25,7 +25,7 @@
     "start": "node ./node_modules/.bin/tsc-watch --jsx react --onSuccess \"rollup -c\"",
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:prod": "npm run lint && npm run test -- --coverage --no-cache && node remap_coverage.js",
+    "test:prod": "npm run lint && node disableTextSummary.js && npm run test -- --coverage --no-cache && node remap_coverage.js",
     "deploy-docs": "ts-node tools/gh-pages-publish",
     "report-coverage": "cat ./coverage_remapped/coverage.lcov | coveralls",
     "commit": "git-cz",
@@ -66,14 +66,9 @@
       "/node_modules/",
       "/test/"
     ],
-    "coverageThreshold": {
-      "global": {
-        "branches": 81,
-        "functions": 88,
-        "lines": 89,
-        "statements": 86
-      }
-    }
+    "coverageReporters": [
+      "json"
+    ]
   },
   "devDependencies": {
     "@types/enzyme": "^2.8.7",
@@ -108,6 +103,7 @@
     "rollup-plugin-sourcemaps": "^0.4.2",
     "rxjs": "^5.4.3",
     "semantic-release": "^6.3.6",
+    "shelljs": "^0.7.8",
     "ts-jest": "^21.0.0",
     "ts-node": "^3.0.6",
     "tsc-watch": "^1.0.5",
