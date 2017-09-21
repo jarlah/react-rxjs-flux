@@ -21,11 +21,11 @@
   "scripts": {
     "lint": "tslint -t codeFrame 'src/**/*.ts*' 'test/**/*.ts*'",
     "prebuild": "rimraf dist",
-    "build": "tsc --jsx react && rollup -c && rimraf compiled && typedoc --jsx react --out dist/docs --target es6 --theme minimal src",
-    "start": "node ./node_modules/.bin/tsc-watch --jsx react --onSuccess \"rollup -c\"",
+    "build": "tsc --jsx react && rollup -c && rimraf compiled* && typedoc --jsx react --out dist/docs --target es6 --theme minimal src",
+    "start": "node ./node_modules/.bin/tsc-watch --jsx react -p tsconfig.test.json",
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:prod": "npm run lint && node disableTextSummary.js && npm run test -- --coverage --no-cache && node remap_coverage.js",
+    "test:prod": "rimraf compiled* && npm run lint && node disableTextSummary.js && npm run test -- --coverage --no-cache && node remap_coverage.js",
     "deploy-docs": "ts-node tools/gh-pages-publish",
     "report-coverage": "cat ./coverage_remapped/coverage.lcov | coveralls",
     "commit": "git-cz",
@@ -36,7 +36,7 @@
     "commitmsg": "validate-commit-msg"
   },
   "lint-staged": {
-    "{src,test}/**/*.ts*": [
+    "{src,test}/**/*.{ts, tsx}": [
       "prettier --write --no-semi",
       "git add"
     ]

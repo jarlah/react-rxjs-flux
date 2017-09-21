@@ -12,7 +12,7 @@ import {
 export default function inject<ComponentProps, StoreProps, ParentProps>(
   store: Store<ParentProps, StoreProps>,
   props: PropsType<ComponentProps, StoreProps, ParentProps>,
-  _devTools?: DevToolsExtension
+  _devTools?: DevToolsExtension | null
 ): Injector<ComponentProps, ParentProps> {
   const devTools: DevToolsExtension | null =
     typeof _devTools !== "undefined" ? _devTools : getExtension()

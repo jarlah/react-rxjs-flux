@@ -1,4 +1,4 @@
-import { inject, createStore } from "../src/react-rxjs"
+import { inject, createStore, PropsType } from "../src/react-rxjs"
 import { isDev } from "../src/RxStore"
 import { isRelevant, getExtension } from "../src/DevTools"
 import { Observable, Subject } from "rxjs"
@@ -49,7 +49,10 @@ describe("getExtension", () => {
       }
     )
     const extension = getExtension()
-    expect(extension).not.toBe(null)
+    if (!extension) {
+      fail("Extension is null");
+      return;
+    }
     extension.disconnect()
   })
   afterEach(() => {
@@ -82,7 +85,7 @@ describe("render", () => {
 
 describe("getName", () => {
   it("should return Unknown for something other than component", () => {
-    const name = getName("hi")
+    const name = getName(() => null)
     expect(name).toEqual("Unknown")
   })
 })
@@ -118,7 +121,9 @@ describe("isRelevant", () => {
   it("should not be relevant", () => {
     expect(
       isRelevant({
-        type: "JADAJADA"
+        type: "JADAJADA",
+        state: null,
+        payload: { type: 'JADAJADA' }
       })
     ).toBe(false)
   })
@@ -210,7 +215,7 @@ describe("RxInject", () => {
   })
 
   it("is instantiable with props object", () => {
-    const NumberComp = (props: { number: number }) => (
+    const NumberComp = (props: { number: 5000 }) => (
       <span>{props.number}</span>
     )
 
@@ -274,27 +279,6 @@ describe("RxInject", () => {
 
     const wrapper = mount(<InjectedNumberComp />)
     expect(shallowToJson(wrapper)).toMatchSnapshot()
-  })
-
-  it("should fail horribly if passed wrong values", done => {
-    const NumberComp = (props: { number: number }) => (
-      <span>{props.number}</span>
-    )
-
-    const InjectedNumberComp = inject("", (storeProps: number) => ({
-      number: storeProps
-    }))(NumberComp)
-
-    expect(InjectedNumberComp).toBeInstanceOf(Function)
-
-    try {
-      const wrapper = mount(<InjectedNumberComp />)
-      expect(shallowToJson(wrapper)).toMatchSnapshot()
-      fail("Should fail!")
-    } catch (e) {
-      expect(e.message).toEqual("store is not a function")
-      done()
-    }
   })
 })
 
