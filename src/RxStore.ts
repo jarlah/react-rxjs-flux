@@ -10,7 +10,7 @@ export default function createStore<T extends Object>(
   initialState?: T,
   keepAlive: boolean = false
 ): Observable<T> {
-  initialState = initialState || ({} as T)
+  initialState = typeof initialState !== "undefined" ? initialState : null as T
   const store = reducer$
     .scan((state, reducer) => reducer(state), initialState)
     .startWith(initialState)
