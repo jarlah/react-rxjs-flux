@@ -11,7 +11,6 @@ const updatedCoverageFile = './coverage/coverage-updated.json';
 const originalCoverage = fs.readFileSync(coverageFile, 'utf8');
 
 //jest does not correctly escape path to file used as key, force replace it
-console.log(originalCoverage);
 const originalCoverageJson = JSON.parse(originalCoverage);
 const updateCoverageJson = {};
 
