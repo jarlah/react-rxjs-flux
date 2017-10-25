@@ -8,12 +8,11 @@ const writeReport = require('remap-istanbul/lib/writeReport');
 const coverageFile = './coverage/coverage-final.json';
 const updatedCoverageFile = './coverage/coverage-updated.json';
 
-const isWindows = process.platform === 'win32';
-
 const originalCoverage = fs.readFileSync(coverageFile, 'utf8');
 
 //jest does not correctly escape path to file used as key, force replace it
-const originalCoverageJson = JSON.parse(isWindows ? originalCoverage.replace(/\\/g, "\\\\") : originalCoverage);
+console.log(originalCoverage);
+const originalCoverageJson = JSON.parse(originalCoverage);
 const updateCoverageJson = {};
 
 _.forIn(originalCoverageJson, (value, key) => {
