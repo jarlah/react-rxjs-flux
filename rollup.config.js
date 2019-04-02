@@ -10,12 +10,12 @@ export default {
   output: [
     {
       name: 'umd',
-      file: pkg.main + '/bundle-umd.js',
+      file: pkg.main,
       format: 'umd'
     },
     {
       name: 'es',
-      file: pkg.module + '/bundle-es.js',
+      file: pkg.module,
       format: 'es'
     }
   ],
