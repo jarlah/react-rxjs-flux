@@ -37,11 +37,9 @@ export function isRelevant(message: Message): boolean {
 }
 
 export function getExtension(): DevToolsExtension | null {
+  let ext
   if (process.env.NODE_ENV === "development" && typeof window !== "undefined") {
-    const ext = window.__REDUX_DEVTOOLS_EXTENSION__ || window.devToolsExtension
-    if (ext) {
-      return ext
-    }
+    ext = window.__REDUX_DEVTOOLS_EXTENSION__ || window.devToolsExtension
   }
-  return null
+  return ext
 }

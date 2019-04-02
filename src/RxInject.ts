@@ -1,13 +1,9 @@
 import * as React from "react"
 import { render, getName } from "./JsxHelper"
 import { Observable, Subscription } from "rxjs"
-import { Store, PropsType, Injector } from "./RxTypes"
-import {
-  DevToolsExtension,
-  DevToolsInstance,
-  getExtension,
-  isRelevant
-} from "./DevTools"
+import { Store, PropsType, Injector, PropsFactory } from "./RxTypes"
+import { DevToolsExtension, DevToolsInstance, getExtension, isRelevant } from "./DevTools"
+import { tap } from "rxjs/operators"
 
 export default function inject<ComponentProps, StoreProps, ParentProps>(
   store: Store<ParentProps, StoreProps>,
@@ -18,23 +14,21 @@ export default function inject<ComponentProps, StoreProps, ParentProps>(
     typeof _devTools !== "undefined" ? _devTools : getExtension()
   return (Component: React.ComponentType<ComponentProps>) => {
     class Inject extends React.Component<ParentProps, { store: StoreProps }> {
-      storeSubscription: Subscription
-      devToolsSubscription: () => void
-      devToolsInstance: DevToolsInstance
+      storeSubscription?: Subscription
+      devToolsSubscription?: () => void
+      devToolsInstance?: DevToolsInstance
 
       componentWillMount() {
         if (devTools) {
           this.devToolsInstance = devTools.connect({
             name: `${getName(Component)}Container`
           })
-          this.devToolsSubscription = this.devToolsInstance.subscribe(
-            message => {
-              if (isRelevant(message)) {
-                const props: StoreProps = JSON.parse(message.state)
-                this.setState({ store: props })
-              }
+          this.devToolsSubscription = this.devToolsInstance.subscribe(message => {
+            if (isRelevant(message)) {
+              const props: StoreProps = JSON.parse(message.state)
+              this.setState({ store: props })
             }
-          )
+          })
         }
       }
 
@@ -49,12 +43,17 @@ export default function inject<ComponentProps, StoreProps, ParentProps>(
       componentDidMount() {
         const observable = getObservable(store, this.props)
         this.storeSubscription = observable
-          .do(this.sendToDevTools.bind(this))
-          .do(this.updateState.bind(this))
+          .pipe(
+            tap(this.sendToDevTools.bind(this)),
+            tap(this.updateState.bind(this))
+          )
           .subscribe()
       }
 
       componentWillUnmount() {
+        if (!this.storeSubscription || !this.devToolsSubscription) {
+          return
+        }
         this.storeSubscription.unsubscribe()
         if (devTools) {
           this.devToolsSubscription()
@@ -68,7 +67,10 @@ export default function inject<ComponentProps, StoreProps, ParentProps>(
         }
         const customProps =
           typeof props === "function"
-            ? props(this.state.store, this.props)
+            ? (props as PropsFactory<ComponentProps, StoreProps, ParentProps>)(
+                this.state.store,
+                this.props
+              )
             : props
         return render(Component, customProps)
       }
