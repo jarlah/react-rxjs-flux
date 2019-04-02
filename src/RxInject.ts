@@ -80,5 +80,5 @@ export default function inject<ComponentProps, StoreProps, ParentProps>(
 }
 
 function getObservable<P, T>(store: Store<P, T>, parentPops: P): Observable<T> {
-  return store instanceof Observable ? store : store(parentPops)
+  return typeof store !== "function" ? store : store(parentPops)
 }
