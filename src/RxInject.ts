@@ -1,7 +1,7 @@
 import * as React from "react"
 import { render, getName } from "./JsxHelper"
 import { Observable, Subscription } from "rxjs"
-import { Store, PropsType, Injector, PropsFactory } from "./RxTypes"
+import { Store, PropsType, Injector, PropsFactory } from "./react-rxjs"
 import { DevToolsExtension, DevToolsInstance, getExtension, isRelevant } from "./DevTools"
 import { tap } from "rxjs/operators"
 

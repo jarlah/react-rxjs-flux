@@ -2,8 +2,6 @@ import { Observable } from "rxjs"
 import { publishReplay, refCount, scan, startWith, tap } from "rxjs/operators"
 import { Reducer } from "./react-rxjs"
 
-export type Reducer<T> = (state: T) => T
-
 export const isDev = () => process.env.NODE_ENV === "development"
 
 export default function createStore<T extends Object>(

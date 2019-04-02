@@ -21,7 +21,7 @@
   "scripts": {
     "lint": "tslint -t codeFrame 'src/**/*.ts*' 'test/**/*.ts*'",
     "prebuild": "rimraf dist",
-    "build": "tsc --jsx react && rollup -c && rimraf compiled* && typedoc --jsx react --out dist/docs --target es6 --theme minimal src",
+    "build": "tsc --jsx react && rimraf compiled* && rollup -c && typedoc --jsx react --out dist/docs --target es6 --theme minimal src",
     "start": "node ./node_modules/.bin/tsc-watch --jsx react -p tsconfig.test.json",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -99,9 +99,6 @@
     "replace-in-file": "^3.4.4",
     "rimraf": "^2.6.3",
     "rollup": "^1.8.0",
-    "rollup-plugin-commonjs": "^9.2.3",
-    "rollup-plugin-node-resolve": "^4.0.1",
-    "rollup-plugin-sourcemaps": "^0.4.2",
     "rxjs": "^6.4.0",
     "semantic-release": "^15.13.3",
     "shelljs": "^0.8.3",
@@ -113,6 +110,8 @@
     "tslint-config-standard": "^8.0.1",
     "typedoc": "^0.14.2",
     "typescript": "^3.4.1",
-    "validate-commit-msg": "^2.14.0"
+    "validate-commit-msg": "^2.14.0",
+    "rollup-plugin-typescript": "latest",
+    "rollup-plugin-jsx": "latest"
   }
 }
