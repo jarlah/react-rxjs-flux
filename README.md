@@ -19,13 +19,13 @@ npm i -S react-rxjs
 // view.tsx
 import * as React from 'react';
 
-export type MyProps = { 
-  number: number, 
-  inc: () => void, 
-  dec: () => void 
+export type ViewProps = {
+  number: number,
+  inc: () => void,
+  dec: () => void
 };
 
-const MyComponent = (props: MyProps) => (
+const View = (props: ViewProps) => (
     <div>
       {props.number}
       <button onClick={props.inc}>+</button>
@@ -33,25 +33,28 @@ const MyComponent = (props: MyProps) => (
     </div>
 );
 
-export default MyComponent;
+export default View;
 ```
 
 ```js
 // store.ts
 import { createStore } from 'react-rxjs';
+import { merge, Subject, Observable } from "rxjs";
+import { map } from "rxjs/operators";
 
 const inc$ = new Subject<void>();
 const dec$ = new Subject<void>();
 
-const reducer$: Observable<(state: number) => number> = Observable.merge(
-    inc$.map(() => (state: number) => state + 1),
-    dec$.map(() => (state: number) => state - 1)
+const reducer$: Observable<(state: number) => number> = merge(
+    inc$.pipe(map(() => (state: number) => state + 1)),
+    dec$.pipe(map(() => (state: number) => state - 1))
 );
 
-const store$ = createStore("example", reducer$, 0);
+const store$ = createStore("example", reducer$, 0);
 
-export inc = () => inc$.next();
-export dec = () => dec$.next();
+export const inc = () => inc$.next();
+export const dec = () => dec$.next();
+
 export default store$;
 ```
 
@@ -59,15 +62,15 @@ export default store$;
 // container.ts
 import { inject } from 'react-rxjs';
 import store$, { inc, dec } from './store';
-import MyComponent from './view';
+import View, { ViewProps } from './view';
 
-const props = (storeState: number): MyProps => ({
+const props = (storeState: number): ViewProps => ({
     number: storeState,
     inc,
     dec
 });
 
-export default inject(store$, props)(MyComponent);
+export default inject(store$, props)(View);
 ```
 
 ## License
