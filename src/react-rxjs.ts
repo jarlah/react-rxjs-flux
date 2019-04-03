@@ -141,12 +141,12 @@ type Message = {
   state: any
 }
 
-type DevToolsInstance = {
+export type DevToolsInstance = {
   subscribe: (sub: (message: Message) => void) => () => void
   send: (n: string, o: any) => void
 }
 
-type DevToolsExtension = {
+export type DevToolsExtension = {
   connect: (config?: { name?: string }) => DevToolsInstance
   disconnect: () => void
 }
@@ -158,7 +158,7 @@ declare global {
   }
 }
 
-function isRelevant(message: Message): boolean {
+export function isRelevant(message: Message): boolean {
   if (message.type === "DISPATCH") {
     switch (message.payload.type) {
       case "JUMP_TO_ACTION":
@@ -171,7 +171,7 @@ function isRelevant(message: Message): boolean {
   return false
 }
 
-function getExtension(): DevToolsExtension | null {
+export function getExtension(): DevToolsExtension | null {
   let ext
   if (process.env.NODE_ENV === "development" && typeof window !== "undefined") {
     ext = window.__REDUX_DEVTOOLS_EXTENSION__ || window.devToolsExtension
