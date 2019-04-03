@@ -10,7 +10,7 @@ exports[`RxInject is instantiable with Factory abd props function 1`] = `
     </span>
   </NumberComp>
 </Inject>
-`
+`;
 
 exports[`RxInject is instantiable with Factory and class component 1`] = `
 <Inject>
@@ -22,7 +22,7 @@ exports[`RxInject is instantiable with Factory and class component 1`] = `
     </span>
   </NumberComp2>
 </Inject>
-`
+`;
 
 exports[`RxInject is instantiable with Observable 1`] = `
 <Inject>
@@ -34,7 +34,7 @@ exports[`RxInject is instantiable with Observable 1`] = `
     </span>
   </NumberComp>
 </Inject>
-`
+`;
 
 exports[`RxInject is instantiable with Observable 2`] = `
 <Inject>
@@ -46,7 +46,7 @@ exports[`RxInject is instantiable with Observable 2`] = `
     </span>
   </NumberComp>
 </Inject>
-`
+`;
 
 exports[`RxInject is instantiable with props object 1`] = `
 <Inject>
@@ -58,7 +58,7 @@ exports[`RxInject is instantiable with props object 1`] = `
     </span>
   </NumberComp>
 </Inject>
-`
+`;
 
 exports[`RxInject is instantiable with props object and nulled devtools 1`] = `
 <Inject>
@@ -70,14 +70,4 @@ exports[`RxInject is instantiable with props object and nulled devtools 1`] = `
     </span>
   </NumberComp>
 </Inject>
-`
-
-exports[`render should render component 1`] = `
-<hello
-  n={1}
->
-  <span>
-    1
-  </span>
-</hello>
-`
+`;
