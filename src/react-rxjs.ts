@@ -23,70 +23,27 @@ export type StoreFactory<ParentProps, StoreProps> = (props: ParentProps) => Obse
 
 export type Reducer<T> = (state: T) => T
 
-type CT<P> = React.ComponentType<P>
-
-function render<P>(C: CT<P>, p: P): React.ReactElement<P> {
-  return React.createElement(C, p, null)
-}
-
-function getName<P>(C: CT<P>): string {
-  return C.displayName || C.name || "Unknown"
-}
-
 export function inject<ComponentProps, StoreProps, ParentProps>(
   store: Store<ParentProps, StoreProps>,
-  props: PropsType<ComponentProps, StoreProps, ParentProps>,
-  _devTools?: DevToolsExtension | null
+  props: PropsType<ComponentProps, StoreProps, ParentProps>
 ): Injector<ComponentProps, ParentProps> {
-  const devTools: DevToolsExtension | null =
-    typeof _devTools !== "undefined" ? _devTools : getExtension()
   return (Component: React.ComponentType<ComponentProps>) => {
     class Inject extends React.Component<ParentProps, { store: StoreProps }> {
       storeSubscription?: Subscription
       devToolsSubscription?: () => void
-      devToolsInstance?: DevToolsInstance
 
-      componentWillMount() {
-        if (devTools) {
-          this.devToolsInstance = devTools.connect({
-            name: `${getName(Component)}Container`
-          })
-          this.devToolsSubscription = this.devToolsInstance.subscribe(message => {
-            if (isRelevant(message)) {
-              const props: StoreProps = JSON.parse(message.state)
-              this.setState({ store: props })
-            }
-          })
-        }
-      }
-
-      sendToDevTools(store: StoreProps) {
-        this.devToolsInstance && this.devToolsInstance.send("update", store)
-      }
-
-      updateState(store: StoreProps) {
+      updateState = (store: StoreProps) => {
         this.setState({ store })
       }
 
       componentDidMount() {
-        const observable = getObservable(store, this.props)
-        this.storeSubscription = observable
-          .pipe(
-            tap(this.sendToDevTools.bind(this)),
-            tap(this.updateState.bind(this))
-          )
-          .subscribe()
+        const observable = typeof store !== "function" ? store : store(this.props)
+        this.storeSubscription = observable.pipe(tap(this.updateState)).subscribe()
       }
 
       componentWillUnmount() {
-        if (!this.storeSubscription || !this.devToolsSubscription) {
-          return
-        }
+        // @ts-ignore if this is null, then we haven't passed componentDidMount and we are not here
         this.storeSubscription.unsubscribe()
-        if (devTools) {
-          this.devToolsSubscription()
-          devTools.disconnect()
-        }
       }
 
       render() {
@@ -100,18 +57,12 @@ export function inject<ComponentProps, StoreProps, ParentProps>(
                 this.props
               )
             : props
-        return render(Component, customProps)
+        return React.createElement(Component, customProps, null)
       }
     }
     return Inject
   }
 }
-
-function getObservable<P, T>(store: Store<P, T>, parentPops: P): Observable<T> {
-  return typeof store !== "function" ? store : store(parentPops)
-}
-
-const isDev = () => process.env.NODE_ENV === "development"
 
 export function createStore<T extends Object>(
   name: string,
@@ -123,7 +74,6 @@ export function createStore<T extends Object>(
   const store = reducer$.pipe(
     scan((state: T, reducer: Reducer<T>) => reducer(state), initialState),
     startWith(initialState),
-    tap((state: T) => isDev() && console.log(name, state)),
     publishReplay(1),
     refCount()
   )
@@ -131,50 +81,4 @@ export function createStore<T extends Object>(
     store.subscribe()
   }
   return store
-}
-
-type Message = {
-  type: string
-  payload: {
-    type: string
-  }
-  state: any
-}
-
-export type DevToolsInstance = {
-  subscribe: (sub: (message: Message) => void) => () => void
-  send: (n: string, o: any) => void
-}
-
-export type DevToolsExtension = {
-  connect: (config?: { name?: string }) => DevToolsInstance
-  disconnect: () => void
-}
-
-declare global {
-  interface Window {
-    __REDUX_DEVTOOLS_EXTENSION__?: DevToolsExtension
-    devToolsExtension?: DevToolsExtension
-  }
-}
-
-export function isRelevant(message: Message): boolean {
-  if (message.type === "DISPATCH") {
-    switch (message.payload.type) {
-      case "JUMP_TO_ACTION":
-      case "JUMP_TO_STATE":
-        return true
-      default:
-        return false
-    }
-  }
-  return false
-}
-
-export function getExtension(): DevToolsExtension | null {
-  let ext
-  if (process.env.NODE_ENV === "development" && typeof window !== "undefined") {
-    ext = window.__REDUX_DEVTOOLS_EXTENSION__ || window.devToolsExtension
-  }
-  return ext
 }

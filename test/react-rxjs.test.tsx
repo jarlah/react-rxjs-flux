@@ -16,65 +16,9 @@ afterEach(() => {
   delete process.env.NODE_ENV
 });
 
-type OnSubscribeFn = (
-  msg: { type: string; state: any; payload: { type: string } }
-) => void
-type OnMessageFn = (name: string, state: number) => void
-
-function createDummyDevTools(
-  onConnect: (config?: { name: string }) => void,
-  onSubscribe: (fn: OnSubscribeFn) => void,
-  onMessage: OnMessageFn,
-  onDisconnect?: () => void
-) {
-  return {
-    connect: (config?: { name: string }) => {
-      onConnect(config);
-      return {
-        subscribe: (fn: OnSubscribeFn) => {
-          onSubscribe(fn);
-          return () => null
-        },
-        send: onMessage
-      }
-    },
-    disconnect: onDisconnect ? onDisconnect : () => null
-  }
-}
-
 describe("RxInject", () => {
   it("is instantiable with Observable", done => {
-    let next = 0;
     let wrapper;
-    let nameChecked = false;
-
-    const onSubscribe = fn => {
-      setTimeout(() => {
-        fn({
-          type: "DISPATCH",
-          state: 42,
-          payload: { type: "JUMP_TO_STATE" }
-        });
-        fn({
-          type: "JADAJADA"
-        });
-        wrapper.update()
-        expect(shallowToJson(wrapper)).toMatchSnapshot()
-      }, 0)
-    };
-
-    const onMessage = (name, state) => {
-      expect(state).toEqual(next);
-      next++
-    };
-
-    const onConnect = config => {
-      expect(config).not.toBeNull();
-      expect(config.name).toEqual("NumberCompContainer");
-      nameChecked = true
-    };
-
-    const devTools = createDummyDevTools(onConnect, onSubscribe, onMessage)
 
     const NumberComp = (props: { number: number }) => (
       <span>{props.number}</span>
@@ -86,8 +30,7 @@ describe("RxInject", () => {
       stream,
       (storeProps: number) => ({
         number: storeProps
-      }),
-      devTools as any
+      })
     )(NumberComp);
 
     expect(InjectedNumberComp).toBeInstanceOf(Function);
@@ -96,18 +39,17 @@ describe("RxInject", () => {
     expect(shallowToJson(wrapper)).toMatchSnapshot();
     setTimeout(() => {
       wrapper.unmount();
-      expect(nameChecked).toBeTruthy();
       done()
     }, 500)
   })
 
   it("is instantiable with props object", () => {
-    const NumberComp = (props: { number: 5000 }) => (
-      <span>{props.number}</span>
+    const NumberComp = (props: { count: number }) => (
+      <span>{props.count}</span>
     );
 
-    const InjectedNumberComp = inject(of(0), { number: 5000 })(
-      NumberComp as any
+    const InjectedNumberComp = inject(of({ count: 0 } ), { count: 5000 })(
+      NumberComp
     );
 
     expect(InjectedNumberComp).toBeInstanceOf(Function);
@@ -122,7 +64,7 @@ describe("RxInject", () => {
       <span>{props.number}</span>
     );
 
-    const InjectedNumberComp = inject(of(0), { number: 5000 }, null)(
+    const InjectedNumberComp = inject(of(0), { number: 5000 })(
       NumberComp
     );
 

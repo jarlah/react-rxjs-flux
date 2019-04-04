@@ -36,22 +36,10 @@ exports[`RxInject is instantiable with Observable 1`] = `
 </Inject>
 `;
 
-exports[`RxInject is instantiable with Observable 2`] = `
-<Inject>
-  <NumberComp
-    number={42}
-  >
-    <span>
-      42
-    </span>
-  </NumberComp>
-</Inject>
-`;
-
 exports[`RxInject is instantiable with props object 1`] = `
 <Inject>
   <NumberComp
-    number={5000}
+    count={5000}
   >
     <span>
       5000
