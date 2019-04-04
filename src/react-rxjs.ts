@@ -30,7 +30,6 @@ export function inject<ComponentProps, StoreProps, ParentProps>(
   return (Component: React.ComponentType<ComponentProps>) => {
     class Inject extends React.Component<ParentProps, { store: StoreProps }> {
       storeSubscription?: Subscription
-      devToolsSubscription?: () => void
 
       updateState = (store: StoreProps) => {
         this.setState({ store })
