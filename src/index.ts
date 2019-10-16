@@ -1,5 +1,6 @@
 import * as React from "react"
-import { Observable, Subscription } from "rxjs"
+import {useCallback, useEffect, useState} from "react";
+import { Observable } from "rxjs"
 import { publishReplay, refCount, scan, startWith, tap } from "rxjs/operators"
 
 export type Injector<ComponentProps, ParentProps> = (
@@ -28,56 +29,49 @@ export function inject<ComponentProps, StoreProps, ParentProps>(
   props: PropsType<ComponentProps, StoreProps, ParentProps>
 ): Injector<ComponentProps, ParentProps> {
   return (Component: React.ComponentType<ComponentProps>) => {
-    class Inject extends React.Component<ParentProps, { store: StoreProps }> {
-      storeSubscription?: Subscription
+    return (parentProps: ParentProps) => {
 
-      updateState = (store: StoreProps) => {
-        this.setState({ store })
+      const [state, setState] = useState<{ store: StoreProps }>();
+
+      const updateState = useCallback((storeProps: StoreProps) => {
+        setState({ store: storeProps })
+      }, []);
+
+      useEffect(() => {
+        const observable = typeof store !== "function" ? store : store(parentProps);
+        const storeSubscription = observable.pipe(tap(updateState)).subscribe();
+        return () => storeSubscription.unsubscribe();
+      }, []);
+
+      if (!state) {
+        return null;
       }
 
-      componentDidMount() {
-        const observable = typeof store !== "function" ? store : store(this.props)
-        this.storeSubscription = observable.pipe(tap(this.updateState)).subscribe()
-      }
-
-      componentWillUnmount() {
-        // @ts-ignore if this is null, then we haven't passed componentDidMount and we are not here
-        this.storeSubscription.unsubscribe()
-      }
-
-      render() {
-        if (!this.state) {
-          return null
-        }
-        const customProps =
+      const customProps =
           typeof props === "function"
-            ? (props as PropsFactory<ComponentProps, StoreProps, ParentProps>)(
-                this.state.store,
-                this.props
-              )
-            : props
-        return React.createElement(Component, customProps, null)
-      }
-    }
-    return Inject
+              ? (props as PropsFactory<ComponentProps, StoreProps, ParentProps>)(state.store, parentProps)
+              : props;
+
+      return React.createElement(Component, customProps, null);
+    };
   }
 }
 
-export function createStore<T extends Object>(
+export function createStore<T extends any>(
   name: string,
   reducer$: Observable<Reducer<T>>,
   initialState?: T,
   keepAlive: boolean = false
 ): Observable<T> {
-  initialState = typeof initialState !== "undefined" ? initialState : ({} as T)
+  initialState = typeof initialState !== "undefined" ? initialState : ({} as T);
   const store = reducer$.pipe(
     scan((state: T, reducer: Reducer<T>) => reducer(state), initialState),
     startWith(initialState),
     publishReplay(1),
     refCount()
-  )
+  );
   if (keepAlive) {
-    store.subscribe()
+    store.subscribe();
   }
-  return store
+  return store;
 }

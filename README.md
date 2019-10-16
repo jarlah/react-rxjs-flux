@@ -2,9 +2,6 @@
 
 > A small library for creating applications based on unidirectional data flow with RxJS. Now with support for RxJS 6.
 
-[![Build Status](https://travis-ci.org/jarlah/react-rxjs.svg?branch=master)](https://travis-ci.org/jarlah/react-rxjs)
-[![Coverage Status](https://coveralls.io/repos/github/jarlah/react-rxjs/badge.svg?branch=master&q=1234567)](https://coveralls.io/github/jarlah/react-rxjs?branch=master)
-
 [![NPM](https://nodei.co/npm/react-rxjs.png?compact=true)](https://npmjs.org/package/react-rxjs)
 
 ## Install
