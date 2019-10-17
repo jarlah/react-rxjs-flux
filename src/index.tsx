@@ -22,6 +22,12 @@ export type StoreFactory<ParentProps, StoreProps> = (props: ParentProps) => Obse
 
 export type Reducer<T> = (state: T) => T;
 
+/**
+ * this method should work similar to connect in react-redux, albeit a bit differently.
+ *
+ * @param store the store
+ * @param props the props
+ */
 export function inject<ComponentProps, StoreProps, ParentProps>(
   store: Store<ParentProps, StoreProps>,
   props: PropsType<ComponentProps, StoreProps, ParentProps>,
@@ -51,6 +57,15 @@ export function inject<ComponentProps, StoreProps, ParentProps>(
   };
 }
 
+/**
+ * This method basically creates an observable,
+ * but it does a lot of footwork to simulate how a store (in lets say redux) works.
+ *
+ * @param name the name of the store
+ * @param reducer$ the observable reducer
+ * @param initialState the initial state, can be plain object or any type
+ * @param keepAlive if this store is reused across multiple mount/unmount, should this store remember its state?
+ */
 export function createStore<T>(
   name: string,
   reducer$: Observable<Reducer<T>>,
