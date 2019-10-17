@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useCallback, useEffect, useState } from 'react';
-import { Observable } from 'rxjs';
+import { Observable, scheduled, SchedulerLike } from 'rxjs';
 import { publishReplay, refCount, scan, startWith, tap } from 'rxjs/operators';
 
 export type Injector<ComponentProps, ParentProps> = (
@@ -28,41 +28,39 @@ export function inject<ComponentProps, StoreProps, ParentProps>(
 ): Injector<ComponentProps, ParentProps> {
   return (Component: React.ComponentType<ComponentProps>) => {
     return (parentProps: ParentProps) => {
-      const [state, setState] = useState<{ store: StoreProps }>();
-
-      const updateState = useCallback((storeProps: StoreProps) => {
-        setState({ store: storeProps });
-      }, []);
+      const [state, setState] = useState<StoreProps>();
 
       useEffect(() => {
         const observable = typeof store !== 'function' ? store : store(parentProps);
-        const storeSubscription = observable.pipe(tap(updateState)).subscribe();
+        const storeSubscription = observable.pipe(tap(setState)).subscribe();
         return () => storeSubscription.unsubscribe();
       }, []);
 
       if (!state) {
+        // wait for initial data before render the component
         return null;
       }
 
       const customProps =
         typeof props === 'function'
-          ? (props as PropsFactory<ComponentProps, StoreProps, ParentProps>)(state.store, parentProps)
+          ? (props as PropsFactory<ComponentProps, StoreProps, ParentProps>)(state, parentProps)
           : props;
 
-      return React.createElement(Component, customProps, null);
+      return <Component {...customProps} />;
     };
   };
 }
 
-export function createStore<T extends any>(
+export function createStore<T>(
   name: string,
   reducer$: Observable<Reducer<T>>,
-  initialState?: T,
+  initialState: T = null as any,
   keepAlive: boolean = false,
 ): Observable<T> {
-  initialState = typeof initialState !== 'undefined' ? initialState : ({} as T);
   const store = reducer$.pipe(
     scan((state: T, reducer: Reducer<T>) => reducer(state), initialState),
+    // startWith is not deprecated, this is a type error, see more at
+    // https://github.com/ReactiveX/rxjs/issues/4772
     startWith(initialState),
     publishReplay(1),
     refCount(),
