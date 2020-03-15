@@ -50,6 +50,8 @@
     "ts-jest": "^24.1.0",
     "tslint": "^5.20.0",
     "tslint-config-prettier": "^1.18.0",
-    "typescript": "^3.6.4"
+    "typescript": "^3.6.4",
+    "acorn": "^5.7.4",
+    "minimist": ">=1.2.2"
   }
 }
