@@ -1,6 +1,6 @@
-# react-rxjs
+# react-flux-rxjs
 
-> A small library for creating applications based on unidirectional data flow with RxJS. Now with support for RxJS 6.
+> A small library for creating applications based on unidirectional flux like data flow with RxJS. Now with support for RxJS 6.
 
 [![NPM](https://nodei.co/npm/react-rxjs.png?compact=true)](https://npmjs.org/package/react-rxjs)
 
