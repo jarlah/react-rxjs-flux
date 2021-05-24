@@ -28,7 +28,7 @@ export type Reducer<T> = (state: T) => T;
  * @param store the store
  * @param props the props
  */
-export function inject<ComponentProps, StoreProps, ParentProps>(
+export function connect<ComponentProps, StoreProps, ParentProps>(
   store: Store<ParentProps, StoreProps>,
   props: PropsType<ComponentProps, StoreProps, ParentProps>,
 ): Injector<ComponentProps, ParentProps> {
@@ -74,8 +74,6 @@ export function createStore<T>(
 ): Observable<T> {
   const store = reducer$.pipe(
     scan((state: T, reducer: Reducer<T>) => reducer(state), initialState),
-    // startWith is not deprecated, this is a type error, see more at
-    // https://github.com/ReactiveX/rxjs/issues/4772
     startWith(initialState),
     publishReplay(1),
     refCount(),
