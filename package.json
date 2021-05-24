@@ -1,6 +1,6 @@
 {
   "name": "react-rxjs-flux",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "A small library for creating applications based on unidirectional data flow with RxJS",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
