@@ -2,12 +2,12 @@
 
 > A small library for creating applications based on unidirectional flux like data flow with RxJS. Now with support for RxJS 6.
 
-[![NPM](https://nodei.co/npm/react-rxjs.png?compact=true)](https://npmjs.org/package/react-rxjs)
+[![NPM](https://nodei.co/npm/react-flux-rxjs.png?compact=true)](https://npmjs.org/package/react-flux-rxjs)
 
 ## Install
 
 ```bash
-npm i -S react-rxjs
+yarn add react-flux-rxjs
 ```
 
 ## Usage
@@ -73,5 +73,3 @@ export default inject(store$, props)(View);
 ## License
 
 [MIT](http://vjpr.mit-license.org)
-
-This project is a port and rewrite of the original code from [MUSIT Norway](https://gitlab.com/MUSIT-Norway/react-rxjs)

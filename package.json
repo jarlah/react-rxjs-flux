@@ -1,5 +1,5 @@
 {
-  "name": "react-rxjs",
+  "name": "react-rxjs-flux",
   "version": "2.0.8",
   "description": "A small library for creating applications based on unidirectional data flow with RxJS",
   "main": "lib/index.js",
