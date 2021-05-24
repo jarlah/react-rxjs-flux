@@ -14,8 +14,6 @@ yarn add react-rxjs-flux
 
 ```js
 // view.tsx
-import * as React from 'react';
-
 export type ViewProps = {
   number: number,
   inc: () => void,
@@ -57,17 +55,17 @@ export default store$;
 
 ```js
 // container.ts
-import { inject } from 'react-rxjs';
+import { connect } from 'react-rxjs';
 import store$, { inc, dec } from './store';
 import View, { ViewProps } from './view';
 
-const props = (storeState: number): ViewProps => ({
+const mapStateToProps = (storeState: number): ViewProps => ({
     number: storeState,
     inc,
     dec
 });
 
-export default inject(store$, props)(View);
+export default connect(store$, props)(View);
 ```
 
 ## License
