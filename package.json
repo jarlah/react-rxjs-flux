@@ -1,6 +1,6 @@
 {
   "name": "react-rxjs-flux",
-  "version": "2.1.2",
+  "version": "2.1.3",
   "description": "A small library for creating applications based on unidirectional data flow with RxJS",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -19,7 +19,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jarlah/react-rxjs.git"
+    "url": "git+https://github.com/jarlah/react-rxjs-flux.git"
   },
   "keywords": [
     "typesafe",
@@ -32,9 +32,9 @@
   "author": "Jarl André Hübenthal",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/jarlah/react-rxjs/issues"
+    "url": "https://github.com/jarlah/react-rxjs-flux/issues"
   },
-  "homepage": "https://github.com/jarlah/react-rxjs#readme",
+  "homepage": "https://github.com/jarlah/react-rxjs-flux#readme",
   "devDependencies": {
     "@testing-library/dom": "^7.31.0",
     "@testing-library/react": "^11.2.7",
