@@ -1,13 +1,13 @@
-# react-flux-rxjs
+# react-rxjs-flux
 
 > A small library for creating applications based on unidirectional flux like data flow with RxJS. Now with support for RxJS 6.
 
-[![NPM](https://nodei.co/npm/react-flux-rxjs.png?compact=true)](https://npmjs.org/package/react-flux-rxjs)
+[![NPM](https://nodei.co/npm/react-rxjs-flux.png?compact=true)](https://npmjs.org/package/react-rxjs-flux)
 
 ## Install
 
 ```bash
-yarn add react-flux-rxjs
+yarn add react-rxjs-flux
 ```
 
 ## Usage
