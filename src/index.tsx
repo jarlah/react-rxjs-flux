@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { useCallback, useEffect, useState } from 'react';
-import { Observable, ReplaySubject, scheduled, SchedulerLike } from 'rxjs';
-import { publishReplay, refCount, scan, share, startWith, tap } from 'rxjs/operators';
+import { useEffect, useState } from 'react';
+import { Observable, ReplaySubject } from 'rxjs';
+import { scan, share, startWith, tap } from 'rxjs/operators';
 
 export type Injector<ComponentProps, ParentProps> = (
   Component: React.ComponentType<ComponentProps>,
