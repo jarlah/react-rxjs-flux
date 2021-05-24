@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useCallback, useEffect, useState } from 'react';
-import { Observable, scheduled, SchedulerLike } from 'rxjs';
-import { publishReplay, refCount, scan, startWith, tap } from 'rxjs/operators';
+import { Observable, ReplaySubject, scheduled, SchedulerLike } from 'rxjs';
+import { publishReplay, refCount, scan, share, startWith, tap } from 'rxjs/operators';
 
 export type Injector<ComponentProps, ParentProps> = (
   Component: React.ComponentType<ComponentProps>,
@@ -75,8 +75,12 @@ export function createStore<T>(
   const store = reducer$.pipe(
     scan((state: T, reducer: Reducer<T>) => reducer(state), initialState),
     startWith(initialState),
-    publishReplay(1),
-    refCount(),
+    share({
+      connector: () => new ReplaySubject(1),
+      resetOnError: false,
+      resetOnComplete: false,
+      resetOnRefCountZero: false,
+    })
   );
   if (keepAlive) {
     store.subscribe();
