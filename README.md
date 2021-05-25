@@ -12,7 +12,7 @@ yarn add react-rxjs-flux
 
 ## Usage
 
-```js
+```typescript
 // view.tsx
 export type ViewProps = {
   number: number,
@@ -31,7 +31,7 @@ const View = (props: ViewProps) => (
 export default View;
 ```
 
-```js
+```typescript
 // store.ts
 import { createStore } from 'react-rxjs';
 import { merge, Subject, Observable } from "rxjs";
@@ -50,7 +50,7 @@ const store$ = createStore("example", reducer$, 0);
 export default store$;
 ```
 
-```js
+```typescript
 // container.ts
 import { connect } from 'react-rxjs';
 import store$, { inc$, dec$ } from './store';
