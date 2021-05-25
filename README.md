@@ -37,8 +37,8 @@ import { createStore } from 'react-rxjs';
 import { merge, Subject, Observable } from "rxjs";
 import { map } from "rxjs/operators";
 
-const inc$ = new Subject<void>();
-const dec$ = new Subject<void>();
+export const inc$ = new Subject<void>();
+export const dec$ = new Subject<void>();
 
 const reducer$: Observable<(state: number) => number> = merge(
     inc$.pipe(map(() => (state: number) => state + 1)),
@@ -46,9 +46,6 @@ const reducer$: Observable<(state: number) => number> = merge(
 );
 
 const store$ = createStore("example", reducer$, 0);
-
-export const inc = () => inc$.next();
-export const dec = () => dec$.next();
 
 export default store$;
 ```
@@ -61,8 +58,8 @@ import View, { ViewProps } from './view';
 
 const mapStateToProps = (storeState: number): ViewProps => ({
     number: storeState,
-    inc,
-    dec
+    inc: () => inc$.next(),
+    dec: () => dec$.next(),
 });
 
 export default connect(store$, mapStateToProps)(View);

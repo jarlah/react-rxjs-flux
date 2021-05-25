@@ -69,8 +69,7 @@ export function connect<ComponentProps, StoreProps, ParentProps>(
 export function createStore<T>(
   name: string,
   reducer$: Observable<Reducer<T>>,
-  initialState: T = null as any,
-  keepAlive: boolean = false,
+  initialState: T = (null as unknown) as T,
 ): Observable<T> {
   const store = reducer$.pipe(
     scan((state: T, reducer: Reducer<T>) => reducer(state), initialState),
@@ -82,8 +81,5 @@ export function createStore<T>(
       resetOnRefCountZero: false,
     })
   );
-  if (keepAlive) {
-    store.subscribe();
-  }
   return store;
 }
