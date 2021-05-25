@@ -65,7 +65,7 @@ const mapStateToProps = (storeState: number): ViewProps => ({
     dec
 });
 
-export default connect(store$, props)(View);
+export default connect(store$, mapStateToProps)(View);
 ```
 
 ## License
