@@ -53,7 +53,7 @@ export default store$;
 ```js
 // container.ts
 import { connect } from 'react-rxjs';
-import store$, { inc, dec } from './store';
+import store$, { inc$, dec$ } from './store';
 import View, { ViewProps } from './view';
 
 const mapStateToProps = (storeState: number): ViewProps => ({
